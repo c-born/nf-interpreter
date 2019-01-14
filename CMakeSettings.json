@@ -215,24 +215,16 @@
           "value": "TRUE"
         },
         {
-          "name": "CpuToGraphicsDisplay",
-          "value": "C:\\nanoFramework\\nf-interpreter\\targets\\CMSIS-OS\\ChibiOS\\ST_STM32F769I_DISCOVERY\\GUI\\Display\\SPI"
-        },
-        {
-          "name": "GraphicsDisplay",
-          "value": "C:\\nanoFramework\\nf-interpreter\\src\\CLR\\GUI\\Devices\\Displays\\STM7735"
+          "name": "UI_DISPLAY_DRIVER",
+          "value": "OTM8009A"
         },
         {
           "name": "NF_FEATURE_UI_TOUCH",      // Include touch support
           "value": "TRUE"
         },
         {
-          "name": "CpuToTouchSensor",
-          "value": "C:\\nanoFramework\\nf-interpreter\\targets\\CMSIS-OS\\ChibiOS\\ST_STM32F769I_DISCOVERY\\GUI\\TouchSensor\\SPI"
-        },
-        {
-          "name": "TouchSensor",
-          "value": "C:\\nanoFramework\\nf-interpreter\\src\\CLR\\GUI\\Devices\\Touch\\FT6206"
+          "name": "UI_TOUCH_SENSOR",
+          "value": "FT6206"
         }
       ]
     }

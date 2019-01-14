@@ -22,7 +22,7 @@ list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfa
 
 list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Font")
 list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Includes")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Includes/${UI_DISPLAY_DRIVER}")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Displays/${UI_DISPLAY_DRIVER}")
 list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${TARGET_BASE_LOCATION}/UI.Display/SPI")
 
 # source files
