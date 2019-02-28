@@ -254,8 +254,8 @@ jobs:
   - checkout: self
 
   # step from template @ nf-tools repo
-  - template: azure-pipelines-templates/discord-webhook.yml@templates  
-    parameters:
-      status: 'failure'
-      webhookUrl: '$(DiscordWebhook)'
-      message: ''
+#  - template: azure-pipelines-templates/discord-webhook.yml@templates  
+#    parameters:
+#      status: 'failure'
+#      webhookUrl: '$(DiscordWebhook)'
+#      message: ''
