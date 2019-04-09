@@ -1,0 +1,77 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+
+    "tasks": [
+        {
+            "label": "echo",
+            "type": "shell",
+            "command": "cmd",
+            "args": [ {
+                "value": "/C echo ${config:cmake.executable_output_path} ${env:nfRoot}build/${variant:target}",
+                "quoting" : "weak"
+            }
+            ],
+//            "args": ["SetSubst"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Flash nanoCLR COM3",
+            "type": "shell",
+            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect 0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin 0x10000 C:/usr/src/NanoFramework/nf-interpreter/build/nanoCLR.bin 0x8000 C:/usr/src/NanoFramework/nf-interpreter/build/partitions_4mb.bin",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        { 
+            "label": "Erase flash COM3", 
+            "type": "shell", 
+            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 115200 --before \"default_reset\" --after \"hard_reset\" erase_flash", 
+            "presentation": { 
+                "reveal": "always", 
+                "panel": "shared" 
+            }, 
+            "problemMatcher": [] 
+        }, 
+        {
+            "label": "Flash nanoCLR Wrover COM3",
+            "type": "shell",
+            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect 0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin 0x10000 C:/usr/src/NanoFramework/nf-interpreter/build/nanoCLR.bin 0x8000 C:/usr/src/NanoFramework/nf-interpreter/build/partitions_4mb.bin",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Flash nanoCLR ESP32-EVB COM3",
+            "type": "shell",
+            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect 0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin 0x10000 C:/usr/src/NanoFramework/nf-interpreter/build/nanoCLR.bin 0x8000 C:/usr/src/NanoFramework/nf-interpreter/build/partitions_4mb.bin",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },         
+        {
+            "label": "SetSubst",
+            "type":"shell",
+            "command": "./SetNfRoot.bat",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "runOptions": {
+                "runOn": "folderOpen"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
