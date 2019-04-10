@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "New Version - ESP32 nanoCLR - Segger JLink",
+            "name": "Test Version - ESP32 nanoCLR - Segger JLink",
             "type": "cppdbg",
             "request": "launch",
             "MIMode": "gdb",
@@ -141,6 +141,64 @@
                 "exceptions": true,
                 "moduleLoad": true
             }
-        }
+        },
+        {
+            "name": "F769I Discovery nanoBooter",
+            "type": "cppdbg",
+            "request": "launch",
+            "miDebuggerPath": "C:/GNU_Tools_ARM_Embedded/7-2018-q2-update/bin/arm-none-eabi-gdb.exe",
+            "targetArchitecture": "ARM",
+            "program": "C:/usr/src/NanoFramework/nf-interpreter/build/ST_STM32F769I_DISCOVERY/nanoBooter.elf",
+
+            "setupCommands": [
+                {"text": "target extended-remote localhost:3333"},
+                {"text": "monitor reset_config none separate"},
+                {"text": "monitor reset halt"},                
+                {"text": "monitor flash write_image erase \"C:/usr/src/NanoFramework/nf-interpreter/build/ST_STM32F769I_DISCOVERY/nanoBooter.hex\" "},
+                {"text": "file C:/usr/src/NanoFramework/nf-interpreter/build/ST_STM32F769I_DISCOVERY/nanoBooter.elf"}
+            ],
+
+            "customLaunchSetupCommands": [
+                {"text": "monitor reset_config none separate"},
+                {"text": "monitor reset halt"}
+            ],
+
+            "launchCompleteCommand": "exec-continue",
+            "debugServerPath": "C:/nanoFramework_Tools/Tools/openocd/bin/openocd.exe",
+            "debugServerArgs": "-s \"C:/nanoFramework_Tools/Tools/openocd/bin/scripts/\" -f interface/stlink-v2-1.cfg -f board/stm32f7discovery.cfg",
+            "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
+            "filterStderr": true,
+            "externalConsole": true,
+            "cwd": "${cwd}"
+        },
+        {
+            "name": "F769I Discovery nanoCLR",
+            "type": "cppdbg",
+            "request": "launch",
+            "miDebuggerPath": "C:/GNU_Tools_ARM_Embedded/7-2018-q2-update/bin/arm-none-eabi-gdb.exe",
+            "targetArchitecture": "ARM",
+            "program": "${command:extension.workspaceFolderFS}/build/ST_STM32F769I_DISCOVERY/nanoCLR.elf",
+
+            "setupCommands": [
+                {"text": "target extended-remote localhost:3333"},
+                {"text": "monitor reset_config none separate"},
+                {"text": "monitor reset halt"},
+                {"text": "monitor flash write_image erase \"${command:extension.workspaceFolderFS}/build/ST_STM32F769I_DISCOVERY/nanoCLR.hex\" "},
+                {"text": "file ${command:extension.workspaceFolderFS}/build/ST_STM32F769I_DISCOVERY/nanoCLR.elf"}
+            ],
+
+            "customLaunchSetupCommands": [
+                {"text": "monitor reset_config none separate"},
+                {"text": "monitor reset halt"} 
+            ],
+
+            "launchCompleteCommand": "exec-continue",
+            "debugServerPath": "C:/Esp32_Tools/openocd-esp32/bin/openocd.exe",
+            "debugServerArgs": "-s \"C:/Esp32_Tools/openocd-esp32/share/openocd/scripts\" -f interface/stlink-v2-1.cfg -f board/stm32f7discovery.cfg",
+            "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
+            "filterStderr": true,
+            "externalConsole": true,
+            "cwd": "${cwd}"
+        }  
     ]
 }

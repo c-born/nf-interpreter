@@ -113,7 +113,7 @@
         },
         {
           "name": "NF_FEATURE_DEBUGGER:BOOL", //OFF-default-ON-to-include-managed-app-debugging-capability
-          "value": "OFF"
+          "value": "ON"
         },
         {
           "name": "NF_FEATURE_RTC:BOOL", //OFF-default-ON-to-enable-hardware-RTC
@@ -210,7 +210,7 @@
         },
         {
           "name": "API_nanoFramework.Devices.Can:BOOL", //OFF-default-ON-to-add-this-API
-          "value": "ON"
+          "value": "OFF"
         },
         {
           "name": "API_Hardware.Esp32:BOOL", //OFF-default-ON-to-add-this-API

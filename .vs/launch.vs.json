@@ -5,9 +5,9 @@
     {
       "type": "cppdbg",
       "name": "nanobooter.elf",
-      "project": "Build\\nanobooter.elf",
+      "project": "Build\\STM769IDiscovery\\nanobooter.elf",
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceRoot}\\BUILD\\nanobooter.elf",
+      "program": "${workspaceRoot}\\BUILD\\STM769IDiscovery\\nanobooter.elf",
       "MIMode": "gdb",
       "externalConsole": true,
       "inheritEnvironments": [
@@ -15,32 +15,30 @@
       ],
       "miDebuggerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Linux\\gcc_arm\\bin\\arm-none-eabi-gdb.exe",
       "setupCommands": [
-        {
-          "text": "-environment-cd ${workspaceRoot}\\Build"
-        },
-        {
-          "text": "-file-exec-and-symbols c:/nanoFramework/nf-interpreter/BUILD/nanobooter.elf",
-          "description": "load file",
-          "ignoreFailures": false
-        },
+        { "text": "-environment-cd ${workspaceRoot}\\Build" },
+        { "text": "!${workspaceRoot}/startocd.bat STM32_STLINK" },
+        { "text": "target extended-remote localhost:3333" },
+        { "text": "-file-exec-and-symbols C:/usr/src/NanoFramework/nf-interpreter/build/STM769IDiscovery/nanoCLR.elf" },
         {
           "text": "-enable-pretty-printing",
           "ignoreFailures": true
         },
+        { "text": "monitor reset_config none separate" },
+        { "text": "monitor reset halt" }/*,
         {
-          "text": "monitor halt",
+          "text": "monitor reset halt",
           "ignoreFailures": true
         },
         {
           "text": "reset init",
           "ignoreFailures": true
-        }
+        }*/
       ],
-      "showDisplayString": true,
-      "miDebuggerServerAddress": "localhost:3333",
-      "launchCompleteCommand": "None",
-      "debugServerPath": "C:\\nanoFramework_Tools\\Tools\\openocd\\bin\\openocd.exe",
-      "debugServerArgs": "-s \"C:\\nanoFramework_Tools\\Tools\\openocd\\bin\\scripts/\" -f interface/stlink-v2-1.cfg -f board/stm32f7discovery.cfg",
+//      "showDisplayString": true,
+//      "miDebuggerServerAddress": "localhost:3333",
+//      "launchCompleteCommand": "None",
+//      "debugServerPath": "C:\\nanoFramework_Tools\\Tools\\openocd\\bin\\openocd.exe",
+//      "debugServerArgs": "-s \"C:\\nanoFramework_Tools\\Tools\\openocd\\bin\\scripts/\" -f interface/stlink-v2-1.cfg -f board/stm32f7discovery.cfg",
       "serverStarted": "Info\\ :\\ [\\w\\d\\.]*:\\ hardware",
       "filterStderr": true,
       "filterStdout": true
