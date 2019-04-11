@@ -30,6 +30,11 @@ find_package(NF_CoreCLR REQUIRED)
 #######################################
 # optional
 
+# ChibiOS contrib repo
+if(CHIBIOS_CONTRIB_REQUIRED)
+    find_package(ChibiOS-Contrib REQUIRED)
+endif()
+
 # nF feature: debugger
 if(NF_FEATURE_DEBUGGER)
     find_package(NF_Debugger REQUIRED)
@@ -60,6 +65,7 @@ add_executable(
     ${NANOBOOTER_PROJECT_NAME}.elf
 
     "${CMAKE_CURRENT_SOURCE_DIR}/target_common.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/target_BlockStorage.c"
 
     # need to add configuration manager to allow get/store configuration blocks
     "${PROJECT_SOURCE_DIR}/src/HAL/nanoHAL_ConfigurationManager_stubs.c"
@@ -100,6 +106,7 @@ add_executable(
     ${TARGET_CHIBIOS_NANOCLR_SOURCES}
 
     ${CHIBIOS_SOURCES}
+    ${CHIBIOS_CONTRIB_SOURCES}
     ${ChibiOSnfOverlay_SOURCES}
 
     ${WireProtocol_SOURCES}
@@ -108,6 +115,9 @@ add_executable(
     "${NF_CoreCLR_SOURCES}"
     "${NF_Debugger_SOURCES}"
     "${NF_Diagnostics_SOURCES}"
+
+    # sources for ChibiOS FatFS
+    "${CHIBIOS_FATFS_SOURCES}"
 
     # sources for nanoFramework APIs
     "${TARGET_NANO_APIS_SOURCES}"
@@ -130,6 +140,7 @@ include_directories(
     ${WireProtocol_INCLUDE_DIRS}
     ${CHIBIOS_INCLUDE_DIRS}
     ${ChibiOSnfOverlay_INCLUDE_DIRS}
+    ${CHIBIOS_CONTRIB_INCLUDE_DIRS}
 
     ${TARGET_CMSIS_COMMON_INCLUDE_DIRS}
     ${TARGET_CHIBIOS_COMMON_INCLUDE_DIRS}
@@ -159,6 +170,9 @@ target_include_directories(${NANOCLR_PROJECT_NAME}.elf PUBLIC
 
     # includes for nanoFramework APIs
     "${TARGET_NANO_APIS_INCLUDES}"
+
+    # includes for ChibiOS FatFS
+    "${CHIBIOS_FATFS_INCLUDE_DIRS}"
 
     # includes for ChibiOS LwIP
     "${CHIBIOS_LWIP_INCLUDE_DIRS}"

@@ -877,6 +877,11 @@ static const CLR_RT_MethodHandler method_lookup[] =
     NULL,
     NULL,
     NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
+    NULL,
     Library_corlib_native_System_WeakReference::get_IsAlive___BOOLEAN,
     Library_corlib_native_System_WeakReference::get_Target___OBJECT,
     Library_corlib_native_System_WeakReference::set_Target___VOID__OBJECT,
@@ -900,5 +905,5 @@ const CLR_RT_NativeAssemblyData g_CLR_AssemblyNative_mscorlib =
     "mscorlib", 
     0x7CCFBEC1,
     method_lookup,
-    { 1, 1, 0, 4 }
+    { 1, 1, 1, 7 }
 };

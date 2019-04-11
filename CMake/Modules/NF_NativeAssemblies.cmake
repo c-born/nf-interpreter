@@ -22,6 +22,7 @@ option(API_Windows.Devices.Pwm                  "option for Windows.Devices.Pwm 
 option(API_Windows.Devices.SerialCommunication  "option for Windows.Devices.SerialCommunication API")
 option(API_Windows.Devices.Spi                  "option for Windows.Devices.Spi API")
 option(API_Windows.Networking.Sockets           "option for Windows.Networking.Sockets")
+option(API_Windows.Storage                      "option for Windows.Storage")
 
 
 # Esp32 only
@@ -29,7 +30,7 @@ option(API_Hardware.Esp32                       "option for Hardware.Esp32")
 
 
 # Stm32 only
-option(API_Hardware.Stm32                       "option for Hardware.Esp32")
+option(API_Hardware.Stm32                       "option for Hardware.Stm32")
 
 
 #################################################################
@@ -174,6 +175,12 @@ macro(ParseNativeAssemblies)
     if(API_Windows.Devices.Wifi)
        ##### API name here (doted name)
        PerformSettingsForApiEntry("Windows.Devices.Wifi")
+    endif()
+ 
+    # Windows.Storage
+    if(API_Windows.Storage)
+       ##### API name here (doted name)
+       PerformSettingsForApiEntry("Windows.Storage")
     endif()
 
     # Interop assemblies

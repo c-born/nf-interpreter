@@ -30,6 +30,11 @@ find_package(NF_CoreCLR REQUIRED)
 #######################################
 # optional
 
+# ChibiOS contrib repo
+if(CHIBIOS_CONTRIB_REQUIRED)
+    find_package(ChibiOS-Contrib REQUIRED)
+endif()
+
 # nF feature: debugger
 if(NF_FEATURE_DEBUGGER)
     find_package(NF_Debugger REQUIRED)
@@ -60,6 +65,7 @@ add_executable(
     ${NANOBOOTER_PROJECT_NAME}.elf
 
     "${CMAKE_CURRENT_SOURCE_DIR}/target_common.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/target_BlockStorage.c"
 
     # need to add configuration manager to allow get/store configuration blocks
     "${PROJECT_SOURCE_DIR}/src/HAL/nanoHAL_ConfigurationManager_stubs.c"
@@ -98,6 +104,7 @@ add_executable(
     ${TARGET_CHIBIOS_NANOCLR_SOURCES}
 
     ${CHIBIOS_SOURCES}
+    ${CHIBIOS_CONTRIB_SOURCES}
     ${ChibiOSnfOverlay_SOURCES}
 
     ${WireProtocol_SOURCES}
@@ -115,6 +122,13 @@ add_executable(
 add_dependencies(${NANOBOOTER_PROJECT_NAME}.elf ChibiOS)
 add_dependencies(${NANOCLR_PROJECT_NAME}.elf ChibiOS)
 
+# add dependencies from CHIBIOS_FILESYSTEM_COMPONENTS (this is required to make sure that ChibiOS filesystem components are unzip at the proper locations before the build starts)
+# only required if filesystem is ON
+if(USE_FILESYSTEM_OPTION)
+    add_dependencies(${NANOBOOTER_PROJECT_NAME}.elf CHIBIOS_FILESYSTEM_COMPONENTS)
+    add_dependencies(${NANOCLR_PROJECT_NAME}.elf CHIBIOS_FILESYSTEM_COMPONENTS)
+endif()
+
 # include common directories
 include_directories(
     "${CMAKE_CURRENT_BINARY_DIR}"
@@ -128,6 +142,7 @@ include_directories(
     ${WireProtocol_INCLUDE_DIRS}
     ${CHIBIOS_INCLUDE_DIRS}
     ${ChibiOSnfOverlay_INCLUDE_DIRS}
+    ${CHIBIOS_CONTRIB_INCLUDE_DIRS}
 
     ${TARGET_CMSIS_COMMON_INCLUDE_DIRS}
     ${TARGET_CHIBIOS_COMMON_INCLUDE_DIRS}

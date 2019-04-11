@@ -8,16 +8,28 @@
 #include <target_platform.h>
 #include <cmsis_os.h>
 #include <hal.h>
+#include <hal_nf_community.h>
 #include <ch.h>
 
 uint32_t WakeupReasonStore;
 
-inline void CPU_Reset(){ NVIC_SystemReset(); };
+inline void CPU_Reset()
+{ 
+    NVIC_SystemReset(); 
+};
 
-inline bool CPU_IsSoftRebootSupported() { return true; };
+inline bool CPU_IsSoftRebootSupported()
+{ 
+    return true; 
+};
 
 // CPU sleep is not currently implemented in this target
-inline void CPU_Sleep(SLEEP_LEVEL_type level, uint64_t wakeEvents) { (void)level; (void)wakeEvents;  };
+inline void CPU_Sleep(SLEEP_LEVEL_type level, uint64_t wakeEvents)
+{ 
+    (void)level;
+    (void)wakeEvents;
+
+};
 
 void CPU_SetPowerMode(PowerLevel_type powerLevel)
 {
