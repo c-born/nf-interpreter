@@ -2,56 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Test Version - ESP32 nanoCLR - Segger JLink",
-            "type": "cppdbg",
-            "request": "launch",
-            "MIMode": "gdb",
-            "miDebuggerPath": "C:/Esp32_Tools/xtensa-esp32-elf/bin/xtensa-esp32-elf-gdb.exe",
-            "stopAtEntry":true,
-            "program": "${command:extension.workspaceFolderFS}/build/ESP32_nanoCLR/nanoCLR.elf",
-            "setupCommands": [
-                {"text": "set logging on"},
-                {"text": "target extended-remote localhost:3333"},
-                {"text": "file ${command:extension.workspaceFolderFS}/build/ESP32_nanoCLR/nanoCLR.elf"},
-                {"text": "set remote hardware-watchpoint-limit 2"},
-                {"text": "monitor reset halt"},
-                {"text": "flushregs"},
-                {"text": "thb app_main"},
-//                {"text": "continue"}
-                {"text": "x $a1=0"}
-            ],
-
-            "launchCompleteCommand": "exec-run",
-            "debugServerPath": "C:/Esp32_Tools/openocd-esp32/bin/openocd.exe",
-            "debugServerArgs": "-s \"C:/Esp32_Tools/openocd-esp32/share/openocd/scripts/\" -f interface/jlink.cfg -f target/esp32.cfg -c \"adapter_khz 3000\" " ,
-            "serverStarted": "Info : .*Tensilica.*0x1.",
-            "filterStderr": true,
-            "externalConsole": true,
-            "cwd": "${cwd}",
-
-            "logging": {
-                "trace": true,
-                "traceResponse": true,
-                "engineLogging": true,
-                "programOutput": true,
-                "exceptions": true,
-                "moduleLoad": true
-            }
-        },
-        {
             "name": "ESP32 nanoCLR - Segger JLink",
             "type": "cppdbg",
             "request": "launch",
             "MIMode": "gdb",
             "miDebuggerPath": "C:/Esp32_Tools/xtensa-esp32-elf/bin/xtensa-esp32-elf-gdb.exe",
             "stopAtEntry":true,
-            "program": "C:/usr/src/NanoFramework/nf-interpreter/build/targets/FreeRTOS_ESP32/ESP32_WROOM_32/nanoCLR.elf",
-
+            "program": "${command:nf.binaryDir/}/nanoCLR.elf",
             "setupCommands": [
                 {"text": "set logging on"},
                 {"text": "target extended-remote localhost:3333"},
-                {"text": "file C:/usr/src/NanoFramework/nf-interpreter/build/targets/FreeRTOS_ESP32/ESP32_WROOM_32/nanoCLR.elf"},
+                {"text": "file ${command:nf.binaryDir/}/nanoCLR.elf"},
+                {"text": "set remote hardware-watchpoint-limit 2"},
                 {"text": "monitor reset halt"},
+                {"text": "flushregs"},
+                {"text": "thb app_main"},
+//                {"text": "continue"}
                 {"text": "x $a1=0"}
             ],
 
@@ -79,12 +45,12 @@
             "MIMode": "gdb",
             "miDebuggerPath": "C:/ESP32_TOOLS/bin/xtensa-esp32-elf-gdb.exe",
             "stopAtEntry":true,
-            "program": "C:/usr/src/NanoFramework/nf-interpreter/build/targets/FreeRTOS/ESP32_DevKitC/nanoCLR.elf",
+            "program": "${command:nf.binaryDir/}/nanoCLR.elf",
 
             "setupCommands": [
                 {"text": "set logging on"},
                 {"text": "target extended-remote localhost:3333"},
-                {"text": "file C:/usr/src/NanoFramework/nf-interpreter/build/targets/FreeRTOS/ESP32_DevKitC/nanoCLR.elf"},
+                {"text": "file ${command:nf.binaryDir/}/nanoCLR.elf"},
                 {"text": "monitor reset halt"},
                 {"text": "thb app_main"},
                 {"text": "x $a1=0"}
@@ -114,12 +80,12 @@
             "MIMode": "gdb",
             "miDebuggerPath": "C:/ESP32_TOOLS/bin/xtensa-esp32-elf-gdb.exe",
             "stopAtEntry":true,
-            "program": "C:/usr/src/NanoFramework/nf-interpreter/build/targets/FreeRTOS/ESP32_DevKitC/nanoCLR.elf",
+            "program": "${command:nf.binaryDir/}/nanoCLR.elf",
 
             "setupCommands": [
                 {"text": "set logging on"},
                 {"text": "target extended-remote localhost:3333"},
-                {"text": "file C:/usr/src/NanoFramework/nf-interpreter/build/targets/FreeRTOS/ESP32_DevKitC/nanoCLR.elf"},
+                {"text": "file ${command:nf.binaryDir/}/nanoCLR.elf"},
                 {"text": "monitor reset halt"},
                 {"text": "thb app_main"},
                 {"text": "x $a1=0"}
@@ -148,14 +114,14 @@
             "request": "launch",
             "miDebuggerPath": "C:/GNU_Tools_ARM_Embedded/7-2018-q2-update/bin/arm-none-eabi-gdb.exe",
             "targetArchitecture": "ARM",
-            "program": "C:/usr/src/NanoFramework/nf-interpreter/build/ST_STM32F769I_DISCOVERY/nanoBooter.elf",
+            "program": "${command:nf.binaryDir/}/nanoBooter.elf",
 
             "setupCommands": [
                 {"text": "target extended-remote localhost:3333"},
                 {"text": "monitor reset_config none separate"},
                 {"text": "monitor reset halt"},                
-                {"text": "monitor flash write_image erase \"C:/usr/src/NanoFramework/nf-interpreter/build/ST_STM32F769I_DISCOVERY/nanoBooter.hex\" "},
-                {"text": "file C:/usr/src/NanoFramework/nf-interpreter/build/ST_STM32F769I_DISCOVERY/nanoBooter.elf"}
+                {"text": "monitor flash write_image erase \"${command:nf.binaryDir/}/nanoBooter.hex\" "},
+                {"text": "file ${command:nf.binaryDir/}/nanoBooter.elf"}
             ],
 
             "customLaunchSetupCommands": [
@@ -177,14 +143,14 @@
             "request": "launch",
             "miDebuggerPath": "C:/GNU_Tools_ARM_Embedded/7-2018-q2-update/bin/arm-none-eabi-gdb.exe",
             "targetArchitecture": "ARM",
-            "program": "${command:extension.workspaceFolderFS}/build/ST_STM32F769I_DISCOVERY/nanoCLR.elf",
+            "program": "${command:nf.binaryDir/}/nanoCLR.elf",
 
             "setupCommands": [
                 {"text": "target extended-remote localhost:3333"},
                 {"text": "monitor reset_config none separate"},
                 {"text": "monitor reset halt"},
-                {"text": "monitor flash write_image erase \"${command:extension.workspaceFolderFS}/build/ST_STM32F769I_DISCOVERY/nanoCLR.hex\" "},
-                {"text": "file ${command:extension.workspaceFolderFS}/build/ST_STM32F769I_DISCOVERY/nanoCLR.elf"}
+                {"text": "monitor flash write_image erase \"${command:nf.binaryDir/}/nanoCLR.hex\" "},
+                {"text": "file ${command:nf.binaryDir/}/nanoCLR.elf"}
             ],
 
             "customLaunchSetupCommands": [

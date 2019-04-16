@@ -3,8 +3,6 @@
     "C_Cpp.intelliSenseEngineFallback": "Disabled",
 //    "terminal.integrated.shell.windows": "C:\\WINDOWS\\System32\\cmd.exe",
 //    "terminal.integrated.shellArgs.windows": ["/K", "dir"],
-//    "code-runner.runInTerminal": true,
-//    "code-runner.customCommand": "SetNfRoot.bat",
     "cmake.buildDirectory" : "${env:nfRoot}build/${variant:target}",
     "cmake.installPrefix": "${env:nfRoot}build/${variant:target}"
 }

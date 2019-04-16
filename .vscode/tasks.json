@@ -2,18 +2,27 @@
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
-
+    "windows": {
+        "options": {
+            "shell": {"executable": "cmd.exe", "args": ["/C"]},
+            "env": {
+                "comPort" : "COM3",
+                "EspTool" : "python ${env:ESP32_IDF_PATH}/components/esptool_py/esptool/esptool.py",
+                "EspEraseOpts" : "--chip esp32 --baud 115200 --before \"default_reset\" --after \"hard_reset\" erase_flash",
+                "EspFlashOpts" : "--chip esp32 --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect",
+                "EspBootLoader" : "0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin"
+            }
+        }
+    },
     "tasks": [
         {
-            "label": "echo",
+            "label": "echo - testing variable expansion",
             "type": "shell",
             "command": "cmd",
             "args": [ {
-                "value": "/C echo ${config:cmake.executable_output_path} ${env:nfRoot}build/${variant:target}",
+                "value": "/C echo ${command:nf.binaryDir}\\nanoCLR.bin",
                 "quoting" : "weak"
-            }
-            ],
-//            "args": ["SetSubst"],
+            } ],
             "presentation": {
                 "reveal": "always",
                 "panel": "new"
@@ -23,7 +32,7 @@
         {
             "label": "Flash nanoCLR COM3",
             "type": "shell",
-            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect 0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin 0x10000 C:/usr/src/NanoFramework/nf-interpreter/build/nanoCLR.bin 0x8000 C:/usr/src/NanoFramework/nf-interpreter/build/partitions_4mb.bin",
+            "command": "%EspTool% --port %comPort% %EspFlashOpts% %EspBootLoader% 0x10000 ${command:nf.binaryDir/}/nanoCLR.bin 0x8000 ${command:nf.binaryDir/}/partitions_4mb.bin",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
@@ -33,7 +42,7 @@
         { 
             "label": "Erase flash COM3", 
             "type": "shell", 
-            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 115200 --before \"default_reset\" --after \"hard_reset\" erase_flash", 
+            "command": "%EspTool% --port %comPort% %EspEraseOpts%", 
             "presentation": { 
                 "reveal": "always", 
                 "panel": "shared" 
@@ -43,7 +52,7 @@
         {
             "label": "Flash nanoCLR Wrover COM3",
             "type": "shell",
-            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect 0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin 0x10000 C:/usr/src/NanoFramework/nf-interpreter/build/nanoCLR.bin 0x8000 C:/usr/src/NanoFramework/nf-interpreter/build/partitions_4mb.bin",
+            "command": "%EspTool% --port %comPort% %EspFlashOpts% %EspBootLoader% 0x10000 ${command:nf.binaryDir/}/nanoCLR.bin 0x8000 ${command:nf.binaryDir/}/partitions_4mb.bin",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
@@ -53,23 +62,10 @@
         {
             "label": "Flash nanoCLR ESP32-EVB COM3",
             "type": "shell",
-            "command": "python C:/ESP32_TOOLS/esp-idf-v3.1/components/esptool_py/esptool/esptool.py --chip esp32 --port \"COM3\" --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect 0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin 0x10000 C:/usr/src/NanoFramework/nf-interpreter/build/nanoCLR.bin 0x8000 C:/usr/src/NanoFramework/nf-interpreter/build/partitions_4mb.bin",
+            "command": "%EspTool% --port %comPort% %EspFlashOpts% %EspBootLoader% 0x10000 ${command:nf.binaryDir/}/nanoCLR.bin 0x8000 ${command:nf.binaryDir/}/partitions_4mb.bin",
             "presentation": {
                 "reveal": "always",
                 "panel": "shared"
-            },
-            "problemMatcher": []
-        },         
-        {
-            "label": "SetSubst",
-            "type":"shell",
-            "command": "./SetNfRoot.bat",
-            "presentation": {
-                "reveal": "always",
-                "panel": "shared"
-            },
-            "runOptions": {
-                "runOn": "folderOpen"
             },
             "problemMatcher": []
         }
