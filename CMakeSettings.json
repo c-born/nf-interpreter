@@ -210,7 +210,7 @@
         },
         {
           "name": "API_nanoFramework.Devices.Can:BOOL", //OFF-default-ON-to-add-this-API
-          "value": "OFF"
+          "value": "ON"
         },
         {
           "name": "API_Hardware.Esp32:BOOL", //OFF-default-ON-to-add-this-API
