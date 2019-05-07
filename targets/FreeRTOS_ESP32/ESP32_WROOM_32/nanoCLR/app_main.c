@@ -11,6 +11,8 @@
 #include <LaunchCLR.h>
 #include <string.h>
 
+#include "lv_draw.h"
+
 extern void CLRStartupThread(void const * argument);
 
 // Mutex for GLOBAL_LOCK / GLOBAL_UNLOCK
@@ -28,7 +30,15 @@ void receiver_task(void *pvParameter)
 // Main task start point
 void main_task(void *pvParameter)
 {
-  (void)pvParameter;
+	lv_point_t * point1;
+	lv_point_t * point2;
+	lv_area_t * mask;
+	lv_style_t * style;
+	lv_opa_t opa_scale;
+	lv_draw_line(point1, point2, mask, style, opa_scale);
+	
+
+	(void)pvParameter;
   
   // CLR settings to launch CLR thread
   CLR_SETTINGS clrSettings;

@@ -60,6 +60,13 @@ if(USE_NETWORKING_OPTION)
 add_library(NetworkLib STATIC "${NF_Networking_SOURCES}" "${TARGET_ESP32_NETWORK_SOURCES}"  "${TARGET_LWIP_SOURCES}" )
 endif()
 
+add_library(littlevGLLib STATIC "${littlevGL_Sources}" )
+
+
+#if(NF_FEATURE_littlevGL)
+	find_package(NF_UI_littlevGL)
+#endif()
+
 
 #######################
 # nanoCLR executable
@@ -84,6 +91,13 @@ add_executable(
     "${NF_CoreCLR_SOURCES}"
     "${NF_Debugger_SOURCES}"
     "${NF_Diagnostics_SOURCES}"
+
+    # sources for littlevGL Graphics
+	#${littlevGL_Sources}
+
+	
+
+
     
 	# sources for nanoFramework Network sockets & LWIP
 #    "${NF_Networking_SOURCES}"
@@ -133,6 +147,9 @@ if(USE_NETWORKING_OPTION)
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -L${CMAKE_CURRENT_BINARY_DIR} -lNetworkLib " )
 endif()
 
+set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -L${CMAKE_CURRENT_BINARY_DIR} -llittlevGLLib " )
+
+
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -lgcc -lstdc++ -Wl,--end-group -Wl,-EL  ")
 
 #message( "wireprotol :${WireProtocol_INCLUDE_DIRS}")
@@ -169,6 +186,10 @@ target_include_directories(${NANOCLR_PROJECT_NAME}.elf PUBLIC
 
     # includes for nanoFramework APIs
     "${TARGET_NANO_APIS_INCLUDES}"
+
+    # includes for littlevGL Graphics
+	#"${littlevGL_Includes}"
+
 )
 
 # Set Includes & compile definition for Network library
@@ -188,8 +209,16 @@ if(USE_NETWORKING_OPTION)
     set_target_properties(NetworkLib PROPERTIES COMPILE_FLAGS " -w " )
 endif()
 
+
+if(NF_FEATURE_littlevGL)
+    target_include_directories(littlevGLLib PUBLIC "${littlevGL_Includes}")
+	target_link_libraries(${NANOCLR_PROJECT_NAME}.elf littlevGLLib)
+	target_compile_definitions(${NANOCLR_PROJECT_NAME}.elf PUBLIC "-DLV_CONF_INCLUDE_SIMPLE" )
+endif()
+
+
+
 # set platform for NanoClr
-target_compile_definitions(${NANOCLR_PROJECT_NAME}.elf PUBLIC "-DPLATFORM_ESP32 " )
 
 # build types that have debugging capabilities AND are NOT RTM have to have the define 'NANOCLR_ENABLE_SOURCELEVELDEBUGGING'
 if((NOT NF_BUILD_RTM) OR NF_FEATURE_DEBUGGER)

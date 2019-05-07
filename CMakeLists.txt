@@ -264,6 +264,11 @@ endif()
 # nanoFramework features
 #################################################################
 
+if(NF_FEATURE_littlevGL)
+    set(API_Windows.littlevGL ON CACHE INTERNAL "Forcing Windows.littlevGL API option to ON")
+    message(STATUS "Support for littlevGL graphics is included")
+endif()
+
 ###################################################################
 # debugger (default is OFF so no support for debugging is included
 option(NF_FEATURE_DEBUGGER "option to enable support for debugging")
