@@ -40,6 +40,7 @@
             "TARGET_SERIES" : "ESP32", 
             "ESP32_BOARD" : "ESP32_WROOM_32",
             "USE_FPU" : "TRUE",
+            "USE_NETWORKING_OPTION:BOOL" : "TRUE",
             "RTOS" : "FREERTOS_ESP32",
             "SWO_OUTPUT" : "OFF",
             "NF_BUILD_RTM" : "OFF",
@@ -50,12 +51,13 @@
             "NF_WP_TRACE_ALL" : "OFF",
             "NF_WP_IMPLEMENTS_CRC32" : "OFF",
             "NF_FEATURE_DEBUGGER" : "ON",
+            "NF_FEATURE_HAS_CONFIG_BLOCK" : "TRUE",
             "NF_FEATURE_RTC" : "ON",
+            "NF_NETWORKING_SNTP" : "OFF",
             "NF_FEATURE_USE_APPDOMAINS" : "OFF",
             "NF_FEATURE_USE_FILESYSTEM" : "OFF",
-            "NF_FEATURE_HAS_CONFIG_BLOCK" : "ON",
+            "NF_SECURITY_OPENSSL" : "OFF",
             "API_System.Net" : "ON",
-            "NF_SECURITY_OPENSSL" : "ON",
             "API_Windows.Devices.Wifi": "ON",
             "API_Windows.Devices.Adc" : "ON",
             "API_Windows.Devices.Gpio" : "ON",
@@ -64,6 +66,9 @@
             "API_Windows.Devices.SerialCommunication" : "ON",
             "API_Windows.Devices.Spi" : "ON",
             "API_Windows.Networking.Sockets" : "OFF",
+            "API_Windows.Storage" : "OFF",
+            "API_nanoFramework.Devices.Can" : "OFF",
+            "API_nanoFramework.Devices.OneWire" : "ON",
             "API_Hardware.Esp32" : "ON"
         }
       }
