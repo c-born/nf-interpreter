@@ -7,7 +7,7 @@ REM BEWARE of trailing whitespace after line continuation characer ^ - they will
 setlocal
 
 :: List of available targets - keep in sync with defined configurations below!
-set targets=STM32Disco STM32Nucleo ESP32_S ESP32_L STM32Disco_yaml STM32Nucleo_yaml
+set targets=STM32Disco STM32Nucleo ESP32_S ESP32 ESP32_L STM32Disco_yaml STM32Nucleo_yaml
 
 :: default target
 set target=help
@@ -98,7 +98,7 @@ goto :eof
 
 :end
 :: Clear %errorlevel%
-call set _a=a > null
+call set _a=a > nul
 endlocal
 popd
 ::exit
@@ -162,6 +162,39 @@ cmake %esp_vars%%^
  
 goto :build
 
+:: === ESP32 WROOM32 - Try to replicate the VS2017 build settings
+:ESP32
+cmake %esp_vars%%^
+ -DESP32_BOARD:STRING=ESP32_WROOM_32^
+ -DBUILD_VERSION:STRING="0.9.99.999"^
+ -DUSE_NETWORKING_OPTION:BOOL=TRUE^
+ -DUSE_RNG:BOOL=ON^
+ -DNF_FEATURE_HAS_CONFIG_BLOCK:BOOL=TRUE^
+ -DNF_FEATURE_DEBUGGER:BOOL=TRUE^
+ -DNF_FEATURE_RTC=ON^
+ -DNF_NETWORKING_SNTP=ON^
+ -DNF_FEATURE_WATCHDOG:BOOL=ON^
+ -DNF_SECURITY_OPENSSL:BOOL=OFF^
+ -DAPI_Hardware.Esp32:BOOL=ON^
+ -DAPI_Hardware.Stm32:BOOL=OFF^
+ -DAPI_System.Net:BOOL=ON^
+ -DAPI_System.Math:BOOL=ON^
+ -DAPI_Windows.Devices.Adc:BOOL=ON^
+ -DAPI_Windows.Devices.Gpio:BOOL=ON^
+ -DAPI_Windows.Devices.I2c:BOOL=ON^
+ -DAPI_Windows.Devices.Pwm:BOOL=ON^
+ -DAPI_Windows.Devices.SerialCommunication:BOOL=ON^
+ -DAPI_Windows.Devices.Spi:BOOL=ON^
+ -DAPI_Windows.Networking.Sockets:BOOL=OFF^
+ -DAPI_Windows.Storage:BOOL=ON^
+ -DAPI_Windows.Devices.Wifi:BOOL=ON^
+ -DAPI_nanoFramework.Devices.Can:BOOL=OFF^
+ -DAPI_nanoFramework.Devices.OneWire:BOOL=ON^
+ -G Ninja %shortpath%
+ 
+goto :build
+ 
+ 
 :: === ESP32 WROOM32 - Large Example
 :ESP32_L
 cmake %esp_vars%%^
