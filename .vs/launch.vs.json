@@ -11,7 +11,7 @@
       "MIMode": "gdb",
       "externalConsole": true,
       "inheritEnvironments": [
-        "gcc_arm"
+    //    "gcc_arm"
       ],
       "miDebuggerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\Linux\\gcc_arm\\bin\\arm-none-eabi-gdb.exe",
       "setupCommands": [
@@ -84,56 +84,6 @@
           "text": "thb app_main"
         }
       ],
-      "launchCompleteCommand": "None",
-      "serverStarted": "Info : .*Tensilica.*0x1.",
-      "filterStderr": true,
-      "filterStdout": true
-    },
-    {
-      "type": "cppdbg",
-      "name": "new2_nanoCLR.elf",
-      "project": "Build/ESP32/nanoCLR.elf",
-      "cwd": "${workspaceRoot}",
-      "program": "Build/ESP32/nanoCLR.elf",
-      "MIMode": "gdb",
-      "stopAtEntry": false,
-      "externalConsole": true,
-      "inheritEnvironments": [
-//        "gcc_arm"
-      ],
-      "miDebuggerPath": "C:/Esp32_Tools/xtensa-esp32-elf/bin/xtensa-esp32-elf-gdb.exe",
-      "setupCommands": [
-        {
-          "text": "set logging on"
-        },
-        {
-          "text": "!${workspaceRoot}/startocd.bat ESP32_JLINK"
-        },
-        {
-          "text": "target extended-remote localhost:3333"
-        },
-        {
-          "text": "-file-exec-and-symbols C:/usr/src/NanoFramework/nfi-test/build/ESP32/nanoCLR.elf"
-        },
-        {
-          "text": "set remote hardware-watchpoint-limit 2"
-        },
-        {
-          "text": "monitor reset halt"
-        },
-        {
-          "text": "flushregs"
-        },
-        {
-          "text": "thb app_main"
-        }
-      ],
-      "logging": {
-        "engineLogging": true,
-        "traceResponse": true
-      },
-      "visualizerFile": "${debugInfo.linuxNatvisPath}",
-      "showDisplayString": true,
       "launchCompleteCommand": "None",
       "serverStarted": "Info : .*Tensilica.*0x1.",
       "filterStderr": true,

@@ -34,16 +34,6 @@
           "type": "STRING"
         },
         {
-          "name": "GIT_EXECUTABLE",
-          "value": "${env.VSINSTALLDIR}/Common7/IDE/CommonExtensions/Microsoft/TeamFoundation/Team Explorer/Git/cmd/git.exe",
-          "type": "STRING"
-        },
-        {
-          "name": "GIT_VERSION_STRING",
-          "value": "2.19.0",
-          "type": "STRING"
-        },
-        {
           "name": "TARGET_SERIES",
           "value": "STM32F7xx",
           "type": "STRING"
