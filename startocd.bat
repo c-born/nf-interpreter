@@ -2,6 +2,7 @@ REM Starts OpenOCD - designed to be called from GDB, itself started from Visual 
 REM If already running it will fail and exit, leaving the existing one to handle GDB requests
 REM Template allows for multiple target interfaces and boards - add new ones as required
 REM DAV 26FEB19
+
 setlocal
 set cmd=C:/Esp32_Tools/openocd-esp32/bin/openocd.exe -s C:/Esp32_Tools/openocd-esp32/share/openocd/scripts
 
@@ -35,6 +36,10 @@ goto start
 
 :ESP32_WROVER
 set iface=-f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp-wroom-32.cfg 
+goto start
+
+:ESP32_WROOM_32
+set iface=-f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp-wroom-32.cfg
 goto start
 
 :STM32_STLINK

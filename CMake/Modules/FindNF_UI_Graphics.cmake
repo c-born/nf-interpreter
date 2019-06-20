@@ -13,19 +13,16 @@ if(NOT EXISTS "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Displays/${UI_DISPLAY_
     message(FATAL_ERROR, "\nDisplay driver not found in device drivers directory.\n")
 endif()
 
-# set include directories
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Bmp")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Gif")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Jpeg")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Includes")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Font")
 
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Font")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Includes")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Displays/${UI_DISPLAY_DRIVER}")
-list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${TARGET_BASE_LOCATION}/UI.Display/SPI")
+# Graphics and Touch Core
+#__________________
+list(APPEND NF_UI_Graphics_SRC_FILE "${PROJECT_SOURCE_DIR}/src/LittlevGL/lvgl/lv_core/lv_group.c")
+list(APPEND NF_UI_Graphics_SRC_FILE "${PROJECT_SOURCE_DIR}/src/LittlevGL/lvgl/lv_themes/lv_theme_zen.c")
 
-# source files
+
+# Display Driver Source
+#__________________
+list(APPEND NF_UI_Graphics_SRC_FILE "${PROJECT_SOURCE_DIR}/src/LittlevGL/lv_drivers/display/fbdev.c")
 set(NF_UI_Graphics_SRCS
 
     Graphics.cpp
@@ -116,31 +113,35 @@ set(NF_UI_Graphics_SRCS
     Graphics_native.cpp
     Graphics_native_Bitmap.cpp
     Graphics_native_Font.cpp
-)
 
-foreach(SRC_FILE ${NF_UI_Graphics_SRCS})
-    set(NF_UI_Graphics_SRC_FILE SRC_FILE-NOTFOUND)
-    find_file(NF_UI_Graphics_SRC_FILE ${SRC_FILE}
-        PATHS
+# Display Driver Include
+#__________________
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/Core/Bmp")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/Core/Font")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/Core/Gif")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/Core/Includes")
 
-            "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics"
-            "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Bmp"
-            "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Gif"
-            "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Jpeg"
-            "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Font"
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg")
 
-            "${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/UI.Graphics/Native"
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/DeviceInterfaces/UI.Graphics/Font")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/DeviceDrivers/UI/Includes")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/UI/DeviceDrivers/UI/Displays/${UI_DISPLAY_DRIVER}")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${TARGET_BASE_LOCATION}/UI.Display/SPI")
 
-            "${PROJECT_SOURCE_DIR}/src/DeviceDrivers/UI/Displays/${UI_DISPLAY_DRIVER}"
+# Touch drivers source
+#__________________
+list(APPEND NF_UI_Graphics_SRC_FILE "${PROJECT_SOURCE_DIR}/src/LittlevGL/nfCommunityDrivers/ili9341_xpt2046/ili9341.c")
 
-            "${TARGET_BASE_LOCATION}/UI.Display/SPI"
- 
-        CMAKE_FIND_ROOT_PATH_BOTH
-    )
-    # message("${SRC_FILE} >> ${NF_UI_Graphics_SRC_FILE}") # debug helper
-    list(APPEND NF_UI_Graphics_SOURCES ${NF_UI_Graphics_SRC_FILE})
-endforeach()
+# Touch drivers include
+#__________________
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/LittlevGL/nfCommunityDrivers/ili9341_xpt2046")
+list(APPEND NF_UI_Graphics_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/LittlevGL/nfCommunityDrivers/misc")
 
-include(FindPackageHandleStandardArgs)
 
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(NF_UI_Graphics DEFAULT_MSG NF_UI_Graphics_INCLUDE_DIRS NF_UI_Graphics_SOURCES)
+
+# make var global
+#__________________
+set(NF_UI_Graphics_SRC_FILE ${NF_UI_Graphics_SRC_FILE} CACHE INTERNAL "make global")
+set(NF_UI_Graphics_INCLUDE_DIRS ${NF_UI_Graphics_INCLUDE_DIRS} CACHE INTERNAL "make global")
+
+

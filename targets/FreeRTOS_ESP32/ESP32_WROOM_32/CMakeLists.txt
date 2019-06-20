@@ -38,6 +38,11 @@ if(USE_NETWORKING_OPTION)
     find_package(NF_NETWORKING REQUIRED)
 endif()
 
+if(NF_FEATURE_LittlevGL)
+    find_package(NF_LittlevGL REQUIRED)	
+endif()
+
+
 # RTC (real time clock) (default is OFF so RTC is NOT included)
 option(NF_FEATURE_RTC "option to use hardware RTC")
 if(NF_FEATURE_RTC)
@@ -60,19 +65,23 @@ if(USE_NETWORKING_OPTION)
 add_library(NetworkLib STATIC "${NF_Networking_SOURCES}" "${TARGET_ESP32_NETWORK_SOURCES}"  "${TARGET_LWIP_SOURCES}" )
 endif()
 
-add_library(littlevGLLib STATIC "${littlevGL_Sources}" )
 
+# Build LittlevGL components as a separate library
+# Keep getting "Createprocess: file not found" errors in linker.
+# Appears to be related to the size of the @CMake/nanoclr.rsp file becoming greater than ~31-32K.
+# To be researched at a later date.
 
-#if(NF_FEATURE_littlevGL)
-	find_package(NF_UI_littlevGL)
-#endif()
+if(NF_FEATURE_LittlevGL)
+	add_library(LittlevGLLib STATIC "${littlevGL_Sources}")
+    target_include_directories(LittlevGLLib PUBLIC "${littlevGL_Includes}")
+    target_compile_definitions(LittlevGLLib PUBLIC "-DPLATFORM_ESP32 -Werror=unused-parameter" )
+endif()
 
 
 #######################
 # nanoCLR executable
-
+#######################
 add_executable(
-    # executables for project, project sources
     ${NANOCLR_PROJECT_NAME}.elf
 
     "${CMAKE_CURRENT_SOURCE_DIR}/target_common.c"
@@ -91,14 +100,8 @@ add_executable(
     "${NF_CoreCLR_SOURCES}"
     "${NF_Debugger_SOURCES}"
     "${NF_Diagnostics_SOURCES}"
-
-    # sources for littlevGL Graphics
-	#${littlevGL_Sources}
-
-	
-
-
     
+
 	# sources for nanoFramework Network sockets & LWIP
 #    "${NF_Networking_SOURCES}"
 #    "${TARGET_ESP32_NETWORK_SOURCES}"  
@@ -106,9 +109,9 @@ add_executable(
     
     # # sources for nanoFramework APIs
     "${TARGET_NANO_APIS_SOURCES}"
+
+
 )
-
-
 
 # Add link flags
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--start-group ")
@@ -118,6 +121,7 @@ set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_F
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -L ${ESP32_IDF_PATH}/components/esp32/ld -u ld_include_panic_highint_hdl -T esp32.common.ld -T esp32.rom.ld -T esp32.peripherals.ld -T esp32.rom.spiram_incompatible_fns.ld ")
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS "  ${ESP32_IDF_PATH}/components/newlib/lib/libc.a ")
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS "  ${ESP32_IDF_PATH}/components/newlib/lib/libm.a ")
+
 
 #message( "project libs:${PROJECT_LINK_LIBS} " )
 set(LIBPATHSAVE "")
@@ -147,7 +151,9 @@ if(USE_NETWORKING_OPTION)
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -L${CMAKE_CURRENT_BINARY_DIR} -lNetworkLib " )
 endif()
 
-set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -L${CMAKE_CURRENT_BINARY_DIR} -llittlevGLLib " )
+if(NF_FEATURE_LittlevGL)
+  set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf  APPEND_STRING PROPERTY LINK_FLAGS " -L${CMAKE_CURRENT_BINARY_DIR} -lLittlevGLLib " )
+endif()
 
 
 set_property(TARGET ${NANOCLR_PROJECT_NAME}.elf    APPEND_STRING PROPERTY LINK_FLAGS " -lgcc -lstdc++ -Wl,--end-group -Wl,-EL  ")
@@ -172,6 +178,10 @@ include_directories(
     ${WireProtocol_INCLUDE_DIRS}
 
     ${TARGET_ESP32_IDF_INCLUDES}
+
+    # includes for littlevGL Graphics
+	#"${littlevGL_Includes}"
+    
 )
 
 # include directories for nanoCLR
@@ -183,15 +193,13 @@ target_include_directories(${NANOCLR_PROJECT_NAME}.elf PUBLIC
     "${NF_CoreCLR_INCLUDE_DIRS}"
     "${NF_Debugger_INCLUDE_DIRS}"
 	"${NF_Networking_INCLUDE_DIRS}"
+	"${littlevGL_Includes}"
 
     # includes for nanoFramework APIs
     "${TARGET_NANO_APIS_INCLUDES}"
 
-    # includes for littlevGL Graphics
-	#"${littlevGL_Includes}"
 
 )
-
 # Set Includes & compile definition for Network library
 if(USE_NETWORKING_OPTION)
     target_include_directories(NetworkLib PUBLIC
@@ -209,14 +217,10 @@ if(USE_NETWORKING_OPTION)
     set_target_properties(NetworkLib PROPERTIES COMPILE_FLAGS " -w " )
 endif()
 
-
-if(NF_FEATURE_littlevGL)
-    target_include_directories(littlevGLLib PUBLIC "${littlevGL_Includes}")
-	target_link_libraries(${NANOCLR_PROJECT_NAME}.elf littlevGLLib)
-	target_compile_definitions(${NANOCLR_PROJECT_NAME}.elf PUBLIC "-DLV_CONF_INCLUDE_SIMPLE" )
+if(NF_FEATURE_LittlevGL)
+    target_include_directories(LittlevGLLib PUBLIC "${littlevGL_Includes}")
+    target_compile_definitions(LittlevGLLib PUBLIC "-DPLATFORM_ESP32 -Werror=unused-parameter" )
 endif()
-
-
 
 # set platform for NanoClr
 

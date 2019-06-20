@@ -1,3 +1,4 @@
+#pragma GCC optimize ("O0")
 //
 // Copyright (c) 2017 The nanoFramework project contributors
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.

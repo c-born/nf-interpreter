@@ -236,7 +236,7 @@ endif()
 # nanoFramework features
 #################################################################
 
-if(NF_FEATURE_littlevGL)
+if(NF_FEATURE_LittlevGL)
     set(API_Windows.littlevGL ON CACHE INTERNAL "Forcing Windows.littlevGL API option to ON")
     message(STATUS "Support for littlevGL graphics is included")
 endif()
