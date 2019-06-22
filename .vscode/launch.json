@@ -74,11 +74,11 @@
             }
         },
         {
-            "name": "ESP32 nanoCLR - Wrover",
+            "name": "ESP32 Wrover - nanoCLR",
             "type": "cppdbg",
             "request": "launch",
             "MIMode": "gdb",
-            "miDebuggerPath": "C:/ESP32_TOOLS/bin/xtensa-esp32-elf-gdb.exe",
+            "miDebuggerPath": "C:/Esp32_Tools/xtensa-esp32-elf/bin/xtensa-esp32-elf-gdb.exe",
             "stopAtEntry":true,
             "program": "${command:nf.binaryDir/}/nanoCLR.elf",
 
@@ -93,7 +93,7 @@
 
             "launchCompleteCommand": "exec-run",
             "debugServerPath": "C:/ESP32_TOOLS/openocd-esp32/bin/openocd.exe",
-            "debugServerArgs": "-s \"C:/ESP32_TOOLS/openocd-esp32/share/openocd/scripts/\" -f interface/ftdi/esp32_devkitj_v1.cfg -f target/esp32.cfg -c \"adapter_khz 2000\" " ,
+            "debugServerArgs": "-s \"C:/ESP32_TOOLS/openocd-esp32/share/openocd/scripts/\" -f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp-wroom-32.cfg" ,
             "serverStarted": "Info : .*Tensilica.*0x1.",
             "filterStderr": true,
             "externalConsole": true,
