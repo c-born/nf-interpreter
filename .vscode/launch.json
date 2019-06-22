@@ -93,7 +93,7 @@
 
             "launchCompleteCommand": "exec-run",
             "debugServerPath": "C:/ESP32_TOOLS/openocd-esp32/bin/openocd.exe",
-            "debugServerArgs": "-s \"C:/ESP32_TOOLS/openocd-esp32/share/openocd/scripts/\" -f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp-wroom-32.cfg" ,
+            "debugServerArgs": "-s \"C:/ESP32_TOOLS/openocd-esp32/share/openocd/scripts/\" -f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp32-wrover.cfg" ,
             "serverStarted": "Info : .*Tensilica.*0x1.",
             "filterStderr": true,
             "externalConsole": true,
