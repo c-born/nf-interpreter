@@ -232,15 +232,6 @@ else()
     message(STATUS "Random Number Generation by target MCU is NOT activated")
 endif()
 
-#################################################################
-# nanoFramework features
-#################################################################
-
-if(NF_FEATURE_LittlevGL)
-    set(API_Windows.littlevGL ON CACHE INTERNAL "Forcing Windows.littlevGL API option to ON")
-    message(STATUS "Support for littlevGL graphics is included")
-endif()
-
 ###################################################################
 # debugger (default is OFF so no support for debugging is included
 option(NF_FEATURE_DEBUGGER "option to enable support for debugging")
@@ -342,32 +333,6 @@ else()
     message(STATUS "Support for USB Mass Storage IS NOT included")
 endif()
 
-#################################################################
-
-# adds support for UI Graphics
-# (default is OFF so UI graphics is NOT supported)
-option(NF_FEATURE_UI_GRAPHICS "option to enable UI graphics support")
-
-if(NF_FEATURE_UI_GRAPHICS)
-    # Graphics(${CpuToGraphicsDisplay} ${GraphicsDisplay} )
-    message(STATUS "Support for UI graphics is included using ${UI_DISPLAY_DRIVER} driver")
-else()
-    message(STATUS "Support for UI graphics is NOT included")
-endif()
-
-#################################################################
-# adds support for UI Touch and Ink
-# (default is OFF so UI touch is NOT supported)
-option(NF_FEATURE_UI_TOUCH "option to enable UI touch support")
-
-if(NF_FEATURE_UI_TOUCH)
-    # Touch(${CpuToTouchSensor} ${TouchSensor} )
-    message(STATUS "Support for UI touch is included using ${UI_TOUCH_SENSOR} driver")
-else()
-    message(STATUS "Support for UI touch is NOT included")
-endif()
-
-#################################################################
 
 if(RTOS_CHIBIOS_CHECK)
 

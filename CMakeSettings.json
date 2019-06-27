@@ -14,16 +14,6 @@
       "intelliSenseMode": "linux-gcc-arm",
       "variables": [
         {
-          "name": "NF_FEATURE_littlevGL",
-          "value": "ON",
-          "type": "STRING"
-        },
-        {
-          "name": "VISUAL_STUDIO",
-          "value": "TRUE",
-          "type": "STRING"
-        },
-        {
           "name": "EXECUTABLE_OUTPUT_PATH",
           "value": "${workspaceRoot}/Build/${name}",
           "type": "STRING"
@@ -279,16 +269,6 @@
       "intelliSenseMode": "linux-gcc-arm",
       "variables": [
         {
-          "name": "NF_FEATURE_LittlevGL",
-          "value": "FALSE",
-          "type": "STRING"
-        },
-        {
-          "name": "VISUAL_STUDIO",
-          "value": "TRUE",
-          "type": "STRING"
-        },
-        {
           "name": "EXECUTABLE_OUTPUT_PATH",
           "value": "${workspaceRoot}/Build/${name}",
           "type": "STRING"
@@ -514,14 +494,34 @@
           "type": "STRING"
         },
         {
-          "name": "NF_FEATURE_UI_GRAPHICS",
-          "value": "False",
-          "type": "BOOL"
+          "name": "NF_FEATURE_Graphics",
+          "value": "ON",
+          "type": "STRING"
         },
         {
-          "name": "NF_FEATURE_UI_TOUCH",
-          "value": "False",
-          "type": "BOOL"
+          "name": "Graphics_Display",
+          "value": "src/UI/Devices/Display/Display_ILI9341.cpp",
+          "type": "STRING"
+        },
+        {
+          "name": "Target_Graphics_Support",
+          "value": "targets/FreeRTOS_ESP32/ESP32_WROOM_32/nanoCLR/UI/ESP32-WROVER-B/Graphics.cpp",
+          "type": "STRING"
+        },
+        {
+          "name": "NF_FEATURE_Touch",
+          "value": "ON",
+          "type": "STRING"
+        },
+        {
+          "name": "Touch_Device",
+          "value": "src/UI/Devices/Touch/Touch_XPT2046.cpp",
+          "type": "STRING"
+        },
+        {
+          "name": "Target_Touch_Support",
+          "value": "targets/FreeRTOS_ESP32/ESP32_WROOM_32/nanoCLR/UI/ESP32-WROVER-B/Touch.cpp",
+          "type": "STRING"
         }
       ]
     }
