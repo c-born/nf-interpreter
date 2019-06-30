@@ -500,12 +500,12 @@
         },
         {
           "name": "Graphics_Display",
-          "value": "src/UI/Devices/Display/Display_ILI9341.cpp",
+          "value": "ILI9341.cpp",
           "type": "STRING"
         },
         {
-          "name": "Target_Graphics_Support",
-          "value": "targets/FreeRTOS_ESP32/ESP32_WROOM_32/nanoCLR/UI/ESP32-WROVER-B/Graphics.cpp",
+          "name": "Target_Display_Interface",
+          "value": "targets/FreeRTOS_ESP32/UI_Interface/ESP32-WROVER-B/Spi_To_Display.cpp",
           "type": "STRING"
         },
         {
@@ -514,13 +514,13 @@
           "type": "STRING"
         },
         {
-          "name": "Touch_Device",
-          "value": "src/UI/Devices/Touch/Touch_XPT2046.cpp",
+          "name": "TouchPanel_Device",
+          "value": "XPT2046.cpp",
           "type": "STRING"
         },
         {
-          "name": "Target_Touch_Support",
-          "value": "targets/FreeRTOS_ESP32/ESP32_WROOM_32/nanoCLR/UI/ESP32-WROVER-B/Touch.cpp",
+          "name": "Target_TouchPanel_Interface",
+          "value": "targets/FreeRTOS_ESP32/UI_Interface/ESP32-WROVER-B/Spi_To_TouchPanel.cpp",
           "type": "STRING"
         }
       ]

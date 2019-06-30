@@ -2,126 +2,123 @@
 # Copyright (c) 2019 The nanoFramework project contributors
 # See LICENSE file in the project root for full license information.
 #
+#
 
-# UI/Core/Bmp
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Bmp/Bitmap.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Bmp/Graphics_Bmp.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Bmp")
+# UI/Graphics/Core
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Graphics.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/GraphicsMemoryHeap.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core")
 
-# UI/Display/Driver
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Display/Display_functions.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Display")
+# UI/Graphics/Core/Support/Bmp
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Bmp/Bitmap_Decoder.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Bmp")
 
-# UI/Core/Fonts
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Fonts/Font.cpp")
+# UI/Graphics/Core/Support/Fonts
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Fonts/Font.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Fonts")
 
-# UI/Core/Gesture
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Gesture/gesture_driver.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Gesture/gesture_functions.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Gesture/")
+# UI/Graphics/Core/Support/Gif
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif/Gif.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif/GifDecoder.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif/lzwread.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif")
 
-# UI/Core/Gif
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Gif/Gif.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Gif/GifDecoder.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Gif/lzwread.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Gif")
+# UI/Graphics/Core/Support/Jpeg
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jbytearraydatasrc.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcapimin.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcapistd.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jccoefct.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jccolor.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcdctmgr.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jchuff.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcinit.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcmainct.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcmarker.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcmaster.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcomapi.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcparam.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcphuff.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcprepct.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcsample.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jctrans.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdapimin.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdapistd.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdcoefct.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdcolor.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jddctmgr.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdhuff.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdinput.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdmainct.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdmarker.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdmaster.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdmerge.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdphuff.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdpostct.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdsample.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jdtrans.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jerror.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jfdctflt.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jfdctfst.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jfdctint.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jidctflt.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jidctfst.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jidctint.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jidctred.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jmemmgr.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jmemtinyclr.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/Jpeg.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jquant1.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jquant2.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jutils.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/mcbcr.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/mfint.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/miint.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/pfint.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/piint.c")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/transupp.c")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg")
 
-# UI/Core/Graphics
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Graphics/graphics.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Graphics/GraphicsMemoryHeap.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Graphics/pal_graphics.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Graphics")
+# UI/Graphics/Core/Displays
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Displays/${Graphics_Display}")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Displays")
 
-# UI/Core/Ink
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Ink/ink_driver.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Ink/ink_functions.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Ink")
+# UI/Graphics/Native
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native/graphics_native.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native/graphics_native_Bitmap.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native/graphics_native_Font.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native")
 
-# UI/Core/Jpeg
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jbytearraydatasrc.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcapimin.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcapistd.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jccoefct.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jccolor.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcdctmgr.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jchuff.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcinit.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcmainct.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcmarker.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcmaster.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcomapi.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcparam.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcphuff.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcprepct.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jcsample.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jctrans.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdapimin.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdapistd.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdcoefct.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdcolor.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jddctmgr.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdhuff.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdinput.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdmainct.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdmarker.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdmaster.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdmerge.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdphuff.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdpostct.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdsample.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jdtrans.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jerror.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jfdctflt.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jfdctfst.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jfdctint.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jidctflt.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jidctfst.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jidctint.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jidctred.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jmemmgr.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jmemtinyclr.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/Jpeg.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jquant1.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jquant2.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/jutils.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/mcbcr.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/mfint.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/miint.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/pfint.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/piint.c")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg/transupp.c")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Jpeg")
+# UI/TouchPanel/Core/Support
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Gesture/Gesture.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Gesture")
 
-# UI/Core/Native
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/graphics_native.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/graphics_native_Bitmap.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/graphics_native_Font.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/touch_native.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/touch_native_Touch_Ink.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/touch_native_Touch_TouchCollectorConfiguration.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/touch_native_Touch_TouchEventProcessor.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/Native/touch_native_Touch_TouchPanel.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/Native")
+# UI/TouchPanel/Core/Support
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Ink/Ink.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Ink")
 
-# UI/Core/TouchPanel
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/TouchPanel/touchpanel_Driver.cpp")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Core/TouchPanel/touchpanel_functions.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Core/TouchPanel")
+# UI/TouchPanel/Core
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/TouchPanel.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core")
 
-# UI/Devices/Display
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Devices/Display/Display_ILI9341.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Devices/Display")
+# UI/TouchPanel/Devices
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Devices/${Touch_Device}")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Devices")
 
-# UI/Devices/Touch
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Devices/Touch/Touch_XPT2046.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Devices/Touch")
+# UI/TouchPanel/Interfaces
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Interfaces")
 
-# UI/Interfaces
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Interfaces")
+# UI/TouchPanel/Native
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_Ink.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_TouchCollectorConfiguration.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_TouchEventProcessor.cpp")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_TouchPanel.cpp")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native")
+
 
 # Target Board Support
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Graphics_Support}")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Touch_Support}")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Display_Interface}")
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_TouchPanel_Interface}")
 
 # make var global
 #__________________
