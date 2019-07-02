@@ -7,7 +7,9 @@
 #ifndef _FONT_H_
 #define _FONT_H_
 
+#pragma message "IN FONT - BEFORE: Graphics.h "
 #include "Graphics.h"
+#pragma message "IN FONT - AFTER:  Graphics.h "
 
 struct CLR_GFX_FontMetrics
 {

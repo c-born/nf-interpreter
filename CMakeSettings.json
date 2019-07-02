@@ -500,7 +500,12 @@
         },
         {
           "name": "Graphics_Display",
-          "value": "ILI9341.cpp",
+          "value": "ILI9341_240x320_SPI.cpp",
+          "type": "STRING"
+        },
+        {
+          "name": "Target_Graphics_Memory",
+          "value": "targets/FreeRTOS_ESP32/UI_Interface/ESP32-WROVER-B/Graphics_Memory.cpp",
           "type": "STRING"
         },
         {

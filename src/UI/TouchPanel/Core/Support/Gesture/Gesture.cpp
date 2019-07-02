@@ -5,7 +5,7 @@
 //
 #include "Graphics.h"
 #include "gesture_decl.h"
-#include "ink_driver.h"
+#include "Ink.h"
 #include "touchpanel_driver.h"
 
 #include "nanoPAL.h"

@@ -11,13 +11,22 @@
 
 struct DisplayInterface
 {
-	// Display Interface
-	bool DISPLAY::InitializeDisplayDriver();
-	void DISPLAY::SendCommand(CLR_UINT8 c);
-	void DISPLAY::SendCommand(CLR_UINT8 command, CLR_UINT8 value);
-	void DISPLAY::SendData(CLR_UINT16 value);       // Word data
-	void DISPLAY::SendData(const CLR_UINT16 data[], CLR_UINT16 count);
-	void DISPLAY::SendData(CLR_UINT8* pParams, int numberOfParameters);
+	static bool InitializeDisplayDriver();
+	static void SendCommand(CLR_UINT8 c);
+	static void SendCommand(CLR_UINT8 command, CLR_UINT8 value);
+	static void SendCommandAndData(CLR_UINT8 command, CLR_UINT8 data[], CLR_UINT32 dataCount);
+	static void SendData(CLR_UINT16 value);    
+	static void SendData(const CLR_UINT16 data[], CLR_UINT16 count);
+	static void DisplayBacklight(bool on) // true = on
+	{
+
+	}
+	static void DisplayPower(bool powerState)  // true = on
+	{
+
+	}
+	static void DisplayCommandDelay(CLR_INT16 delay);
+
 }
 
 #endif  // _DISPLAY_INTERFACE_H_

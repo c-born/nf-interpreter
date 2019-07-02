@@ -7,7 +7,6 @@
 #ifndef _GRAPHICS_H_
 #define _GRAPHICS_H_ 1
 
-
 #include "nanoCLR_Types.h"
 #include "nanoCLR_Interop.h"
 #include "nanoCLR_Runtime.h"
@@ -16,12 +15,11 @@
 #include "Font.h"
 #include "GraphicsMemoryHeap.h"
 
-//struct CLR_GFX_Bitmap;
-//struct CLR_GFX_Font;
+struct CLR_GFX_Bitmap;
+struct CLR_GFX_Font;
 
 #define __min(a,b) (((a) < (b)) ? (a) : (b))
 #define abs(a) (((a) < 0) ? -(a) : (a))
-
 
 struct GFX_Rect
 {
@@ -136,7 +134,7 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 	static const CLR_UINT8 c_UncompressedRunLength = 7;
 	static const CLR_UINT8 c_CompressedRunOffset = c_UncompressedRunLength + 1;
 	
-	static // Note that these type definitions has to match the ones defined in Bitmap.BitmapImageType enum defined in Graphics.cs
+	//static // Note that these type definitions has to match the ones defined in Bitmap.BitmapImageType enum defined in Graphics.cs
 	static const CLR_UINT8 c_TypeTinyCLRBitmap = 0;
 	static const CLR_UINT8 c_TypeGif = 1;
 	static const CLR_UINT8 c_TypeJpeg = 2;
@@ -180,8 +178,6 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 	static const CLR_UINT32 c_DrawText_TrimmingUnused = 0x00000048;
 	static const CLR_UINT32 c_DrawText_TrimmingMask = 0x00000048;
 
-	//--//
-
 	HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_GFX_BitmapDescription& bm);
 	HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, CLR_UINT32 size, CLR_RT_Assembly* assm);
 	HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size, const CLR_UINT8 type);
@@ -192,9 +188,11 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 
 	HRESULT GetInstanceFromGraphicsHeapBlock(const CLR_RT_HeapBlock& ref, CLR_GFX_Bitmap*& bitmap);
 	HRESULT DeleteInstance(CLR_RT_HeapBlock& ref);
+
 	CLR_UINT32 CreateInstanceJpegHelper(int x, int y, CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
 	CLR_UINT32 ConvertToNative1BppHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
 	CLR_UINT32 ConvertToNative16BppHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
+
 	void Bitmap_Initialize();
 	void Clear();
 	void SetClipping(GFX_Rect& rc);
@@ -209,23 +207,17 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 	
 	void DrawText(LPCSTR str, CLR_GFX_Font& font, CLR_UINT32 color, int x, int y);
 	void HRESULT DrawTextInRect(LPCSTR& szText, int& xRelStart, int& yRelStart, int& renderWidth, int& renderHeight, CLR_GFX_Bitmap* bm, int x, int y, int width, int height, CLR_UINT32 dtFlags, CLR_UINT32 color, CLR_GFX_Font* font);
-
 	void Screen_Flush(CLR_GFX_Bitmap& bitmap, CLR_UINT16 x, CLR_UINT16 y, CLR_UINT16 width, CLR_UINT16 height);
 	void SetPixelsHelper(const GFX_Rect& rect, CLR_UINT32 config, GFX_SetPixelsCallback callback, void* param);
 	void Relocate();
 	void RelocationHandler(CLR_RT_HeapBlock_BinaryBlob* ptr);
 private:
-	//    void Decompress(const CLR_UINT8* data, const CLR_GFX_BitmapDescription* bm, CLR_UINT32 size);
+	void Decompress(const CLR_UINT8* data, const CLR_GFX_BitmapDescription* bm, CLR_UINT32 size);
 	void Decompress(const CLR_UINT8* data, CLR_UINT32 size);
 	void ConvertToNative(const CLR_GFX_BitmapDescription* bmSrc, CLR_UINT32* dataSrc);
 
-	//--//
-
 	PROHIBIT_ALL_CONSTRUCTORS(CLR_GFX_Bitmap);
 };
-
-
-
 
 struct Graphics_Driver
 {
@@ -265,9 +257,9 @@ public:
 		ASSERT((b <= 0x1F) && (g <= 0x3F) && (r <= 0x1F));
 		return (r << 11) | (g << 5) | b;
 	}
-	__inline static CLR_UINT8   ColorRValue(CLR_UINT32 color) { return  color & 0x0000FF; }
-	__inline static CLR_UINT8   ColorGValue(CLR_UINT32 color) { return (color & 0x00FF00) >> 8; }
-	__inline static CLR_UINT8   ColorBValue(CLR_UINT32 color) { return (color & 0xFF0000) >> 16; }
+	__inline static CLR_UINT8 ColorRValue(CLR_UINT32 color) { return  color & 0x0000FF; }
+	__inline static CLR_UINT8 ColorGValue(CLR_UINT32 color) { return (color & 0x00FF00) >> 8; }
+	__inline static CLR_UINT8 ColorBValue(CLR_UINT32 color) { return (color & 0xFF0000) >> 16; }
 	__inline static CLR_UINT32 ColorFromRGB(CLR_UINT8 r, CLR_UINT8 g, CLR_UINT8 b) { return (b << 16) | (g << 8) | r; }
 	__inline static CLR_UINT32 ConvertNativeToColor(CLR_UINT32 nativeColor)
 	{
@@ -299,55 +291,15 @@ public:
 		nativeBrush.opacity = brush.opacity;
 		return nativeBrush;
 	}
-
 	typedef void(*EllipseCallback) (const PAL_GFX_Bitmap&, int, int, void*);
 	static void EllipseAlgorithm(const PAL_GFX_Bitmap& bitmap, int radiusX, int radiusY, void* params, EllipseCallback ellipseCallback);
 	static void Draw4PointsEllipse(const PAL_GFX_Bitmap& bitmap, int offsetX, int offsetY, void* params);
 	static void Draw4PointsRoundedRect(const PAL_GFX_Bitmap& bitmap, int offsetX, int offsetY, void* params);
 };
 
-
-//--//
-
 // The PAL Graphics API uses the 24bit BGR color space, the one that's used for TinyCore and
 // CLR. It is the responsibility of whoever is implementing the PAL to deal with color conversion
 // as neither CLR or TinyCore understands any color space other than this default one.
 // For opacity, the valid value are from 0 (c_OpacityTransparent) to 256 (c_OpacityOpaque).
-
-// Returns the size needed for a native bitmap in the given width and height.
-// If the width and height provided exceeds the parameters of the given system,
-// return -1.
-int Graphics_GetSize(int width, int height);
-
-// Returns the row stride as the number of 32-bit words for a bitmap of the given width.
-int Graphics_GetWidthInWords(int width);
-
-void Graphics_Clear(const PAL_GFX_Bitmap& bitmap);
-
-// Gets the pixel value at (x, y) for the given bitmap in 24bit BGR color space.
-CLR_UINT32 Graphics_GetPixel(const PAL_GFX_Bitmap& bitmap, int x, int y);
-// Sets the pixel value at (x, y) to the given color
-void   Graphics_SetPixel(const PAL_GFX_Bitmap& bitmap, int x, int y, CLR_UINT32 color);
-
-// Draws a line from (x0, y0) to (x1, y1) using the pen (which specified the thickness and the color)
-void Graphics_DrawLine(const PAL_GFX_Bitmap& bitmap, const GFX_Pen& pen, int x0, int y0, int x1, int y1);
-
-// Draws a line from (x0, y0) to (x1, y1) using the pen (which specified the thickness and the native -- lcd specific -- color)
-void Graphics_DrawLineRaw(const PAL_GFX_Bitmap& bitmap, const GFX_Pen& pen, int x0, int y0, int x1, int y1);
-
-// Draws a rectangle using the specified pen, brush.
-void Graphics_DrawRectangle(const PAL_GFX_Bitmap& bitmap, const GFX_Pen& pen, const GFX_Brush& brush, const GFX_Rect& rectangle);
-// Draws a rounded rectangle using the specified pen, brush, and x / y radius.
-void Graphics_DrawRoundedRectangle(const PAL_GFX_Bitmap& bitmap, const GFX_Pen& pen, const GFX_Brush& brush, const GFX_Rect& rectangle,	int radiusX, int radiusY);
-// Draws an ellipse using the specified pen and brush. To draw a circle, make radiusX == radiusY
-void Graphics_DrawEllipse(const PAL_GFX_Bitmap& bitmap, const GFX_Pen& pen, const GFX_Brush& brush, int x, int y, int radiusX, int radiusY);
-// Draws the source bitmap over the destination bitmap. The src and dst rect determines the area of the bitmap to draw from and draw to. 
-// Note that if the width and height from the src rect does not match the width and height of the dst rect, the src image will be stretched
-// to fit into the area.
-void Graphics_DrawImage(const PAL_GFX_Bitmap& bitmapDst, const GFX_Rect& dst, const PAL_GFX_Bitmap& bitmapSrc, const GFX_Rect& src, CLR_UINT16 opacity);
-
-void Graphics_RotateImage(int angle, const PAL_GFX_Bitmap& bitmapDst, const GFX_Rect& dst, const PAL_GFX_Bitmap& bitmapSrc, const GFX_Rect& src, CLR_UINT16 opacity);
-
-;
 
 #endif  // _GRAPHICS_H_

@@ -8,29 +8,23 @@
 #include "Graphics.h"
 #include "Display.h"
 
-
 struct Draw4PointsRoundedRectParams
 {
 	int x1;
 	int y1;
 	int x2;
 	int y2;
-
 	GFX_Pen* pen;
 	GFX_Brush* brush;
-
 	int lastFillOffsetY;
 };
 struct Draw4PointsEllipseParams
 {
 	int centerX;
 	int centerY;
-
 	GFX_Pen* pen;
-
 	GFX_Brush* brush;
 	int lastFillOffsetY;
-
 };
 struct RADIAN
 {
@@ -200,7 +194,6 @@ static const RADIAN radian[] = {
 	{ 0.034899496702501f, 0.999390827019096f },
 	{ 0.017452406437283f, 0.999847695156391f },
 };
-
 
 bool CLR_GFX_BitmapDescription::BitmapDescription_Initialize(int width, int height, int bitsPerPixel)
 {
@@ -1025,7 +1018,6 @@ void CLR_GFX_Bitmap::SetPixelsHelper(const GFX_Rect& rect, CLR_UINT32 config, GF
 void CLR_GFX_Bitmap::DrawText(LPCSTR str, CLR_GFX_Font& font, CLR_UINT32 color, int x, int y)
 {
 	// This is not implemented: need vectors for text orientation as parameters, and these need to be transformed.
-
 	font.StringOut(str, -1, CLR_GFX_Font::c_DefaultKerning, this, x, y, color);
 }
 HRESULT CLR_GFX_Bitmap::DrawTextInRect(LPCSTR& szText, int& xRelStart, int& yRelStart, int& renderWidth, int& renderHeight, CLR_GFX_Bitmap* bm, int x, int y, int width, int height, CLR_UINT32 dtFlags, CLR_UINT32 color, CLR_GFX_Font* font)
@@ -1048,8 +1040,6 @@ HRESULT CLR_GFX_Bitmap::DrawTextInRect(LPCSTR& szText, int& xRelStart, int& yRel
 	bool              fWordWrap;
 	CLR_UINT32        alignment;
 	CLR_UINT32        trimming;
-
-	//--//
 
 	alignment = dtFlags & CLR_GFX_Bitmap::c_DrawText_AlignmentMask;
 	trimming = dtFlags & CLR_GFX_Bitmap::c_DrawText_TrimmingMask;
@@ -1141,10 +1131,6 @@ void CLR_GFX_Bitmap::Screen_Flush(CLR_GFX_Bitmap& bitmap, CLR_UINT16 x, CLR_UINT
 
 	Display::BitBltEx(x, y, width, height, bitmap.m_palBitmap.data);
 }
-
-
-
-
 
 void Graphics_Driver::DrawLineNative(const PAL_GFX_Bitmap& bitmap, GFX_Pen& pen, int x0, int y0, int x1, int y1)
 {
@@ -1873,9 +1859,10 @@ void Graphics_Driver::Draw4PointsEllipse(const PAL_GFX_Bitmap& bitmap, int offse
 		}
 	}
 }
-
 int Graphics_Driver::GetSize(int width, int height)
 {
+	// Returns the size needed for a native bitmap in the given width and height.
+	// If the width and height provided exceeds the parameters of the given system return -1.
 	if (width < 32768 && height < 32768)
 	{
 		// if width and height are both less than 32768 (0x8000), the maximum size would be less than
@@ -1898,6 +1885,7 @@ int Graphics_Driver::GetSize(int width, int height)
 }
 int Graphics_Driver::GetWidthInWords(int width)
 {
+	// Returns the row stride as the number of 32-bit words for a bitmap of the given width.
 	return (width * 16 + 31) / 32;
 }
 CLR_UINT32* Graphics_Driver::ComputePosition(const PAL_GFX_Bitmap& bitmap, int x, int y, CLR_UINT32& mask, CLR_UINT32& shift)

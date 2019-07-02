@@ -4,41 +4,27 @@
 // See LICENSE file in the project root for full license information.
 //
 
+
+
 #include "Graphics.h"
-#include "ink_driver.h"
+#include "Ink.h"
 
 HRESULT Ink_Initialize()
 {
     return g_InkDriver.Initialize();
 }
-
 HRESULT Ink_Uninitialize()
 {
     return g_InkDriver.Uninitialize();
 }
-
 HRESULT Ink_SetRegion(InkRegionInfo* inkRegionInfo)
 {
     return g_InkDriver.SetRegion(inkRegionInfo);
 }
-
 HRESULT Ink_ResetRegion()
 {
     return g_InkDriver.ResetRegion();
 }
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Copyright (c) Microsoft Corporation.  All rights reserved.
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#include "nanoCLR_Types.h"
-#include "nanoCLR_Runtime.h"
-
-#include "ink_driver.h"
-#include "Graphics.h"
-#include "display_functions.h"
-#include "touchpanel_decl.h"
 
 InkDriver g_InkDriver;
 
@@ -50,7 +36,6 @@ InkDriver g_InkDriver;
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
-
 
 HRESULT InkDriver::Initialize()
 {
@@ -68,7 +53,6 @@ HRESULT InkDriver::Initialize()
 
 	return S_OK;
 }
-
 HRESULT InkDriver::Uninitialize()
 {
 	if (m_initialized)
@@ -79,7 +63,6 @@ HRESULT InkDriver::Uninitialize()
 
 	return S_OK;
 }
-
 HRESULT InkDriver::SetRegion(InkRegionInfo* inkRegionInfo)
 {
 	m_InkRegionInfo = *inkRegionInfo;
@@ -125,7 +108,6 @@ HRESULT InkDriver::SetRegion(InkRegionInfo* inkRegionInfo)
 
 	return S_OK;
 }
-
 HRESULT InkDriver::ResetRegion()
 {
 	if (m_InkCompletion.IsLinked()) m_InkCompletion.Abort();
@@ -135,12 +117,10 @@ HRESULT InkDriver::ResetRegion()
 
 	return S_OK;
 }
-
 void InkDriver::InkContinuationRoutine(void* arg)
 {
 	g_InkDriver.DrawInk(arg);
 }
-
 void InkDriver::DrawInk(void* arg)
 {
 	HRESULT hr = S_OK;
@@ -177,6 +157,7 @@ void InkDriver::DrawInk(void* arg)
 		if (!m_InkCompletion.IsLinked()) m_InkCompletion.EnqueueDelta(INK_COMPLETION_TIME_USEC);
 	}
 }
-#pragma GCC diagnostic pop
 
+
+#pragma GCC diagnostic pop
 

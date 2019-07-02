@@ -117,6 +117,7 @@ list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native")
 
 
 # Target Board Support
+list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Graphics_Memory}")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Display_Interface}")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_TouchPanel_Interface}")
 
