@@ -13,12 +13,9 @@ struct DisplayInterface
 {
 	static bool InitializeDisplayInterface();
 	static void SendCommand(CLR_UINT8 c);
-	static void SendCommand(CLR_UINT8 command, CLR_UINT8 value);
+	static void SendData(CLR_UINT8 data[], CLR_UINT32 count);
 	static void SendCommandAndData(CLR_UINT8 command, CLR_UINT8 data[], CLR_UINT32 dataCount);
-	static void SendData(CLR_UINT16 value);
-	static void SendData(const CLR_UINT16 data[], CLR_UINT16 count);
 	static void DisplayBacklight(bool on); // true = on
-	static void DisplayPower(bool powerState);  // true = on
 	static void DisplayCommandDelay(CLR_INT16 delay);
 
 };
