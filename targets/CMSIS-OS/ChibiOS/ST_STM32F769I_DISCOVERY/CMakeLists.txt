@@ -58,6 +58,12 @@ if(NF_SECURITY_MBEDTLS)
     find_package(mbedTLS REQUIRED)
 endif()
 
+# SPIFFS
+if(NF_FEATURE_USE_SPIFFS)
+    find_package(STM32F7_CubePackage REQUIRED)
+    find_package(SPIFFS REQUIRED)
+endif()
+
 # nF feature: UI Graphics
 if(NF_FEATURE_UI_GRAPHICS)
     find_package(NF_UI_Graphics REQUIRED)
@@ -125,24 +131,27 @@ add_executable(
     ${CHIBIOS_SOURCES}
     ${CHIBIOS_CONTRIB_SOURCES}
     ${ChibiOSnfOverlay_SOURCES}
-
+    ${STM32F7_CubePackage_SOURCES}
     ${WireProtocol_SOURCES}
 
     # sources for nanoFramework libraries
-    "${NF_CoreCLR_SOURCES}"
-    "${NF_Debugger_SOURCES}"
-    "${NF_Diagnostics_SOURCES}"
+    ${NF_CoreCLR_SOURCES}
+    ${NF_Debugger_SOURCES}
+    ${NF_Diagnostics_SOURCES}
 
     # sources for ChibiOS FatFS
-    "${CHIBIOS_FATFS_SOURCES}"
+    ${CHIBIOS_FATFS_SOURCES}
     
     # sources for nanoFramework Network LWIP, Sockets and TLS
-    "${CHIBIOS_LWIP_SOURCES}"
-    "${NF_Networking_SOURCES}"
-    "${mbedTLS_SOURCES}"
+    ${CHIBIOS_LWIP_SOURCES}
+    ${NF_Networking_SOURCES}
+    ${mbedTLS_SOURCES}
+
+    # sources for SPIFFS
+    ${SPIFFS_SOURCES}
 
     # sources for nanoFramework APIs
-    "${TARGET_NANO_APIS_SOURCES}"
+    ${TARGET_NANO_APIS_SOURCES}
 
     # sources for UI graphics
     "${NF_UI_Graphics_SOURCES}"
@@ -176,7 +185,7 @@ endif()
 
 # include common directories
 include_directories(
-    "${CMAKE_CURRENT_BINARY_DIR}"
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/common
     ${PROJECT_SOURCE_DIR}/src/CLR/Core
@@ -188,6 +197,7 @@ include_directories(
     ${CHIBIOS_INCLUDE_DIRS}
     ${ChibiOSnfOverlay_INCLUDE_DIRS}
     ${CHIBIOS_CONTRIB_INCLUDE_DIRS}
+    ${STM32F7_CubePackage_INCLUDE_DIRS}
 
     ${TARGET_CMSIS_COMMON_INCLUDE_DIRS}
     ${TARGET_CHIBIOS_COMMON_INCLUDE_DIRS}
@@ -195,41 +205,44 @@ include_directories(
 
 # include directories for nanoBooter
 target_include_directories(${NANOBOOTER_PROJECT_NAME}.elf PUBLIC
-    "${CMAKE_CURRENT_BINARY_DIR}/nanoBooter"
+    ${CMAKE_CURRENT_BINARY_DIR}/nanoBooter
      ${CMAKE_CURRENT_SOURCE_DIR}/nanoBooter
 
      ${TARGET_CMSIS_NANOBOOTER_INCLUDE_DIRS}
      ${TARGET_CHIBIOS_NANOBOOTER_INCLUDE_DIRS}
 
     # includes for ChibiOS LwIP
-    "${CHIBIOS_LWIP_INCLUDE_DIRS}"
+    ${CHIBIOS_LWIP_INCLUDE_DIRS}
 )
 
 # include directories for nanoCLR
 target_include_directories(${NANOCLR_PROJECT_NAME}.elf PUBLIC
-    "${CMAKE_CURRENT_BINARY_DIR}/nanoCLR"
+    ${CMAKE_CURRENT_BINARY_DIR}/nanoCLR
      ${CMAKE_CURRENT_SOURCE_DIR}/nanoCLR
 
      ${TARGET_CMSIS_NANOCLR_INCLUDE_DIRS}
      ${TARGET_CHIBIOS_NANOCLR_INCLUDE_DIRS}
 
     # directories for nanoFramework libraries
-    "${NF_CoreCLR_INCLUDE_DIRS}"
-    "${NF_Debugger_INCLUDE_DIRS}"
-    "${NF_Diagnostics_INCLUDE_DIRS}"
+    ${NF_CoreCLR_INCLUDE_DIRS}
+    ${NF_Debugger_INCLUDE_DIRS}
+    ${NF_Diagnostics_INCLUDE_DIRS}
     
     # includes for nanoFramework APIs
-    "${TARGET_NANO_APIS_INCLUDES}"
+    ${TARGET_NANO_APIS_INCLUDES}
 
     # includes for ChibiOS FatFS
-    "${CHIBIOS_FATFS_INCLUDE_DIRS}"
+    ${CHIBIOS_FATFS_INCLUDE_DIRS}
 
     # includes for ChibiOS LwIP
-    "${CHIBIOS_LWIP_INCLUDE_DIRS}"
+    ${CHIBIOS_LWIP_INCLUDE_DIRS}
 
     # incudes for Networking and TLS
-    "${NF_Networking_INCLUDE_DIRS}"
-    "${mbedTLS_INCLUDE_DIRS}"
+    ${NF_Networking_INCLUDE_DIRS}
+    ${mbedTLS_INCLUDE_DIRS}
+
+    # includes for SPIFFS
+    ${SPIFFS_INCLUDE_DIRS}
 
     # incudes for UI graphics
     "${NF_UI_Graphics_INCLUDE_DIRS}"

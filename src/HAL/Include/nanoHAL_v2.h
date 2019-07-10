@@ -332,6 +332,12 @@ __inline void debug_printf( const char *format, ... ) {}
 #endif
 //--//
 
+#define NANOCLR_LOCKED_ACCESS_DECLARATION(type, name)       type copy##name
+#define NANOCLR_LOCKED_ACCESS_EXECUTE(name, expr)			{ GLOBAL_LOCK(); copy##name = expr; GLOBAL_UNLOCK(); }
+#define NANOCLR_LOCKED_ACCESS_GET(name)					    copy##name
+
+//--//
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -339,6 +345,8 @@ extern "C" {
 bool Target_HasNanoBooter();
 void HARD_Breakpoint();
 bool Target_ConfigUpdateRequiresErase();
+uint32_t GetPlatformCapabilities();
+uint32_t GetTargetCapabilities();
 
 #ifdef __cplusplus
 }

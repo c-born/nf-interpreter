@@ -3,13 +3,17 @@
 // See LICENSE file in the project root for full license information.
 //
 
+#include <ch.h>
+#include <hal.h>
+#include <hal_nf_community.h>
 #include <nanoHAL_Power.h>
 #include <nanoHAL_v2.h>
 #include <target_platform.h>
 #include <cmsis_os.h>
-#include <hal.h>
-#include <hal_nf_community.h>
-#include <ch.h>
+
+#if (HAL_USE_FSMC == TRUE)
+#include <fsmc_sdram_lld.h>
+#endif
 
 uint32_t WakeupReasonStore;
 
@@ -41,6 +45,11 @@ void CPU_SetPowerMode(PowerLevel_type powerLevel)
         case PowerLevel__Off:
             // stop watchdog
             wdgStop(&WDGD1);
+
+          #if (HAL_USE_FSMC == TRUE)
+            // shutdown memory
+            fsmcSdramStop(&SDRAMD);
+          #endif
 
             // gracefully shutdown everything
             nanoHAL_Uninitialize_C();
@@ -111,8 +120,14 @@ void CPU_SetPowerMode(PowerLevel_type powerLevel)
           #endif
 
           #if defined(STM32F7XX)
-            SET_BIT(RTC->CR, RTC_CR_ALRAIE);
+            
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            // workaround recommended in section 2.2.2 at STM32F77xxx errata document (DM00257543 - ES0334 Rev 5) //
+            PWR->CSR1 |= PWR_CSR1_EIWUP;
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
             SET_BIT(PWR->CR1, PWR_CR1_PDDS);
+
           #endif
 
           #if defined(STM32H7XX)

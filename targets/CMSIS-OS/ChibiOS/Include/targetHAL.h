@@ -9,11 +9,10 @@
 #include <target_board.h>
 #include <cmsis_gcc.h>
 #include <nanoHAL_v2.h>
+#include <hal.h>
 
-#define GLOBAL_LOCK(x)              chSysLock();
-#define GLOBAL_UNLOCK(x);           chSysUnlock();
-#define ASSERT_IRQ_MUST_BE_OFF()    // TODO need to determine if this needs implementation
-
+#define GLOBAL_LOCK()              chSysLock();
+#define GLOBAL_UNLOCK();           chSysUnlock();
 // platform dependent delay
 #define PLATFORM_DELAY(milliSecs)   osDelay(milliSecs);
 
@@ -50,7 +49,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // DEBUGGER HELPER                                                                                 //
-// The line bellow is meant to be used as helper on checking that the execution engine is running. //
+// The line below is meant to be used as helper on checking that the execution engine is running.  //
 // This can be inferred by checking if Events_WaitForEvents loop is running.                       //
 // The implementation should is to be provided by each target at target_common.h.in                //
 ////////////////////////////////////////////////////////////////////////////////////////////////////

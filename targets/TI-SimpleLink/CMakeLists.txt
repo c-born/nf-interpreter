@@ -38,9 +38,6 @@ if("${TARGET_SERIES}" STREQUAL "CC32xx")
     if(NO_TI_SL_CC32xx_SDK_SOURCE)
         # no TI SimpleLink CC32xx SDK source specified, download it from our repo
 
-        # hack to make the FindGit to work in Windows platforms (check the module comment for details)
-        include(Hack_SetGitSearchPath)
-
         # check for Git (needed here for advanced warning to user if it's not installed)
         find_package(Git)
 
@@ -49,8 +46,8 @@ if("${TARGET_SERIES}" STREQUAL "CC32xx")
             message(FATAL_ERROR "error: could not find Git, make sure you have it installed.")
         endif()
 
-        message(STATUS "TI SimpleLink CC32xx SDK (latest available code from v2.40.02.00")
-        set(TI_SL_CC32xx_SDK_TAG "2.40.02.00")
+        message(STATUS "TI SimpleLink CC32xx SDK (latest available code from v3.10.00.04")
+        set(TI_SL_CC32xx_SDK_TAG "3.10.00.04")
 
         # need to setup a separate CMake project to download the code from the GitHub repository
         # otherwise it won't be available before the actual build step
@@ -133,12 +130,12 @@ if("${TARGET_SERIES}" STREQUAL "CC32xx")
     if(NO_FREERTOS_SOURCE)
         # no FreeRTOS source specified, download it from it's repo
         
-        # check for SVN (needed here for advanced warning to user if it's not installed)
-        find_package(Subversion)
+        # check for Git (needed here for advanced warning to user if it's not installed)
+        find_package(Git)
 
-        #  check if SVN was found, if not report to user and abort
-        if(NOT SUBVERSION_FOUND)
-            message(FATAL_ERROR "error: could not find SVN, make sure you have it installed.")
+        #  check if Git was found, if not report to user and abort
+        if(NOT GIT_EXECUTABLE)
+            message(FATAL_ERROR "error: could not find Git, make sure you have it installed.")
         endif()
 
         # FreeRTOS version
@@ -157,7 +154,7 @@ if("${TARGET_SERIES}" STREQUAL "CC32xx")
         # check if build was requested with a specifc FreeRTOS version
         if(FREERTOS_VERSION_EMPTY)
             # no FreeRTOS version actualy specified, must be empty which is fine, we'll default to a known good version
-            set(FREERTOS_VERSION_TAG "V10.1.1")
+            set(FREERTOS_VERSION_TAG "v1.4.8")
         else()
             # set SVN tag
             set(FREERTOS_VERSION_TAG "${FREERTOS_VERSION}")
@@ -185,14 +182,16 @@ if("${TARGET_SERIES}" STREQUAL "CC32xx")
             FreeRTOS
             PREFIX FreeRTOS
             SOURCE_DIR ${CMAKE_BINARY_DIR}/FreeRTOS_Source
-            SVN_REPOSITORY https://svn.code.sf.net/p/freertos/code/tags/${FREERTOS_VERSION_TAG}/FreeRTOS/Source/
+            GIT_REPOSITORY https://github.com/aws/amazon-freertos.git
+            GIT_TAG ${FREERTOS_VERSION_TAG}  # target specified branch
+            GIT_SHALLOW 1   # download only the tip of the branch, not the complete history
             TIMEOUT 10
             LOG_DOWNLOAD 1
             # Disable all other steps
             INSTALL_COMMAND ""
             CONFIGURE_COMMAND ""
             BUILD_COMMAND ""
-        )
+        )   
 
     else()
         # FreeRTOS source was specified

@@ -223,7 +223,30 @@ int SOCK_connect(SOCK_SOCKET socket, const struct SOCK_sockaddr* address, int ad
 { 
     NATIVE_PROFILE_PAL_COM();
 
-    socketErrorCode = SlNetSock_connect(socket, (const SlNetSock_Addr_t*)address, addressLen);
+    // Simple Link connect API requires it to be called over and over until connection is established (or fails!)
+    // See chapter 6.7.1 of CC3X20 Programmer's Guide (doc SWRU455G).
+    // Our current sockets implementation handles this as blocking connect, so we have to deal with it here
+    // it's not optimal because it prevents the execution engine from performing task switching
+    // this should be addressed at the caller level be implementing a timeout execution within the connect code.
+
+    socketErrorCode = -1;
+
+    // loop until socket is connected (or error is returned)
+    while(socketErrorCode < 0)
+    {
+        socketErrorCode = SlNetSock_connect(socket, (const SlNetSock_Addr_t*)address, addressLen);
+        
+        if( socketErrorCode == SL_ERROR_BSD_EALREADY )
+        {
+            ClockP_usleep(10*1000);
+            continue;
+        }
+        else if(socketErrorCode < 0)
+        {
+            sl_Close(socket);
+        }
+        break;
+    }
 
     return socketErrorCode;
 }
@@ -613,14 +636,24 @@ int SOCK_getsocklasterror(SOCK_SOCKET socket)
 int SOCK_select( int nfds, SOCK_fd_set* readfds, SOCK_fd_set* writefds, SOCK_fd_set* exceptfds, const struct SOCK_timeval* timeout )
 { 
     NATIVE_PROFILE_PAL_COM();
-    
-    int ret = 0;
 
-    // TODO
+    int ret = 0;
+    uint32_t networkInterfaceID;
+
     // If the network goes down then we should alert any pending socket actions
     if(exceptfds != NULL && exceptfds->fd_count > 0)
     {
-        if(SlNetIf_getConnectionStatus(0) == SLNETIF_STATUS_DISCONNECTED)
+        // find the network interface for this socket
+        // the socket handle is "burried" inside the exceptfds struct (see the caller code in Helper__SelectSocket)
+        networkInterfaceID = SlNetSock_getIfID(exceptfds->fd_array[0]);
+        if ( networkInterfaceID == SLNETERR_RET_CODE_INVALID_INPUT )
+        {
+            socketErrorCode = ENOTSOCK;
+
+            return SOCK_SOCKET_ERROR;
+        }
+
+        if ( SlNetIf_getConnectionStatus(networkInterfaceID) == SLNETIF_STATUS_DISCONNECTED )
         {
             if(readfds  != NULL)
             {
@@ -641,13 +674,25 @@ int SOCK_select( int nfds, SOCK_fd_set* readfds, SOCK_fd_set* writefds, SOCK_fd_
     // The original code, being lwIP based, uses the convention that 0 is infinite timeout
     // Because SimpleLink infinite timeout is negative or NULL we need to translate it.
     SlNetSock_Timeval_t timeoutCopy;
-    if(timeout->tv_sec == 0 && timeout->tv_usec == 0)
+    bool isInfiniteTimeout = false;
+
+    if(timeout->tv_sec > 0 || timeout->tv_usec > 0)
     {
-        timeoutCopy.tv_sec = -1;
-        timeoutCopy.tv_usec = 0;
+        timeoutCopy.tv_sec = timeout->tv_sec;
+        timeoutCopy.tv_usec = timeout->tv_usec;
+    }
+    else
+    {
+        isInfiniteTimeout = true;
     }
 
-    ret = SlNetSock_select( SLNETSOCK_MAX_CONCURRENT_SOCKETS, (SlNetSock_SdSet_t*)readfds, (SlNetSock_SdSet_t*)writefds, (SlNetSock_SdSet_t*)exceptfds, &timeoutCopy );
+    ret = SlNetSock_select( 
+        SLNETSOCK_MAX_CONCURRENT_SOCKETS, 
+        (SlNetSock_SdSet_t*)readfds, 
+        (SlNetSock_SdSet_t*)writefds, 
+        (SlNetSock_SdSet_t*)exceptfds, 
+        isInfiniteTimeout ? NULL : &timeoutCopy );
+
     socketErrorCode = ret;
 
     // developer notes:
@@ -849,5 +894,7 @@ bool  SOCKETS_DbgInitialize( int ComPortNum )
 
 bool  SOCKETS_DbgUninitialize( int ComPortNum )
 {
+    NATIVE_PROFILE_PAL_COM();
+
     return true;
 }
