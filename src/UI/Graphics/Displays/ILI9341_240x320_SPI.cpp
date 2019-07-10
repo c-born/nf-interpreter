@@ -4,10 +4,9 @@
 // See LICENSE file in the project root for full license information.
 //
 
-#include "nanoCLR_Types.h"
+#include "Graphics.h"
 #include "Display.h"
 #include "DisplayInterface.h"
-#include "ILI9341_320x240.h"
 
 
 /*
@@ -27,36 +26,30 @@ Power saving mode:
 This implementation was initially written for 16 bit colour, SPI interface of a ESP32-WROVER-KIT-v4.1
 */
 
-
-//#define LCD_SCREEN_PIXELS_PER_WORD      (32/LCD_SCREEN_BPP)
-//#define LCD_SCREEN_WIDTH_IN_WORDS       ((LCD_SCREEN_WIDTH + LCD_SCREEN_PIXELS_PER_WORD - 1) / LCD_SCREEN_PIXELS_PER_WORD)
-//#define LCD_SCREEN_SIZE_IN_WORDS        (LCD_SCREEN_WIDTH_IN_WORDS * LCD_SCREEN_HEIGHT)
-//#define LCD_SCREEN_SIZE_IN_BYTES        (LCD_SCREEN_SIZE_IN_WORDS * 4)
-//
-//#define LCD_NO_PIXEL_CLOCK_DIVIDER      0
-//
-//#define LCD_ORIENTATION	   		  LANDSCAPE
-//#define SCREEN_SIZE_LONGER_SIDE   320        // The maximum resolution of longer longer side of physical LCD
-//#define SCREEN_SIZE_SHORTER_SIDE  240       // The maximum resolution of  shorter longer side of physical LCD
-//
-
 enum ILI9341_Command : CLR_UINT8
 {
 	CMD_NOP = 0x00,
+	CMD_SOFTWARE_RESET = 0x01,
+	CMD_POWER_STATE = 0x10,
 	CMD_Sleep_Out = 0x11,
 	CMD_Gamma_Set = 0x26,
+	CMD_Display_OFF = 0x28,
 	CMD_Display_ON = 0x29,
 	CMD_Column_Address_Set = 0x2A,
 	CMD_Page_Address_Set = 0x2B,
 	CMD_Memory_Write = 0x2C,
+	CMD_Colour_Set = 0x2D,
+	CMD_Memory_Read = 0x2E,
+	CMD_Partial_Area = 0x30,
 	CMD_Memory_Access_Control = 0x36,
 	CMD_Pixel_Format_Set = 0x3A,
+	CMD_Write_Display_Brightness = 0x51,
 	CMD_Frame_Rate_Control_Normal = 0xB1,
 	CMD_Display_Function_Control = 0xB6,
 	CMD_Entry_Mode_Set = 0xB7,
 	CMD_Power_Control_1 = 0xC0,
 	CMD_Power_Control_2 = 0xC1,
-	CMD_VCOM_Control = 0xC5,
+	CMD_VCOM_Control_1 = 0xC5,
 	CMD_VCOM_Control_2 = 0xC7,
 	CMD_Power_Control_A = 0xCB,
 	CMD_Power_Control_B = 0xCF,
@@ -69,135 +62,159 @@ enum ILI9341_Command : CLR_UINT8
 	CMD_Pump_Ratio_Control = 0xF7
 
 };
-//	COLMOD_RGB565
-//	COLMOD_RGB888
-//	MADCTR_MODE_LANDSCAPE
+enum ILI9341_Orientation : CLR_UINT8
+{
+	MADCTL_MH = 0x04, // sets the Horizontal Refresh, 0=Left-Right and 1=Right-Left
+	MADCTL_ML = 0x10, // sets the Vertical Refresh, 0=Top-Bottom and 1=Bottom-Top
+	MADCTL_MV = 0x20, // sets the Row/Column Swap, 0=Normal and 1=Swapped
+	MADCTL_MX = 0x40, // sets the Column Order, 0=Left-Right and 1=Right-Left
+	MADCTL_MY = 0x80, // sets the Row Order, 0=Top-Bottom and 1=Bottom-Top
 
-#define CommandData(c)   c,(CLR_UINT8 *)(CLR_UINT8[c])  // Macro to simplify visualisation of passing pointer to parameters
+	MADCTL_BGR = 0x08 // Blue-Green-Red pixel order
+};
+
+#define CommandData(c)   c,(CLR_UINT8 *)(CLR_UINT8[c])  // Macro to simplify visualisation of passing pointer to parameters;
 
 bool Display::Initialize()
 {
+	// Define the LCD/TFT resolution
 	DisplayAttributes::Orientation = DisplayOrientation::PORTRAIT;
-	DisplayAttributes::BitsPerPixel = 16;
 	DisplayAttributes::PowerSave = PowerSaveState::NORMAL;
+	DisplayAttributes::Height = 320;
+	DisplayAttributes::Width = 240;
+	DisplayAttributes::BitsPerPixel = 16;
+	DisplayAttributes::LongerSide = 320;
+	DisplayAttributes::ShorterSide = 240;
 
-	DisplayAttributes::LongerSize = 320;
-	DisplayAttributes::ShorterSize = 240;
-	DisplayAttributes::Height = 240;
-	DisplayAttributes::Width = 320;
+	// Initialize ILI9341 registers
 
-	DisplayInterface::SendCommandAndData({ CMD_NOP, 0x00 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Power_Control_B,  0x00, 0x83, 0X30 }, 3);
-	DisplayInterface::SendCommandAndData({ CMD_Power_On_Sequence, 0x64, 0x03, 0X12, 0X81 }, 4);
-	DisplayInterface::SendCommandAndData({ CMD_Driver_Timing_Control_A,   0x85, 0x01, 0x79 }, 3);
-	DisplayInterface::SendCommandAndData({ CMD_Power_Control_A,   0x39, 0x2C, 0x00, 0x34, 0x02 }, 5);
-	DisplayInterface::SendCommandAndData({ CMD_Pump_Ratio_Control,  , 0x20 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Driver_Timing_Control_B,   0x00, 0x00 }, 2);
-	DisplayInterface::SendCommandAndData({ CMD_Power_Control_1,   0x26 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Power_Control_2,   0x11 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_VCOM_Control,  0x35, 0x3E }, 2);
-	DisplayInterface::SendCommandAndData({ CMD_VCOM_Control_2,0xBE }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Memory_Access_Control,0x28 }, 1);
+	CLR_UINT8 CMD_Power_Control_A_Data[] = { 0x39, 0x2C, 0x00, 0x34, 0x02 };
+	CLR_UINT8 CMD_Power_Control_B_Data[] = { 0x00, 0xC1, 0X30 };
+	CLR_UINT8  CMD_Driver_Timing_Control_A_Data[] = { 0x85, 0x01, 0x79 };
+	CLR_UINT8  CMD_Driver_Timing_Control_B_Data[] = { 0x00, 0x00 };
+	CLR_UINT8  CMD_Power_On_Sequence_Data[] = { 0x64, 0x03, 0X12, 0X81 };
+	CLR_UINT8  CMD_Pump_Ratio_Control_Data[] = { 0x20 };
+	CLR_UINT8  CMD_Power_Control_1_Data[] = { 0x26 };
+	CLR_UINT8  CMD_Power_Control_2_Data[] = { 0x11 };
+	CLR_UINT8  CMD_VCOM_Control_1_Data[] = { 0x35, 0x3E };
+	CLR_UINT8  CMD_VCOM_Control_2_Data[] = { 0xBE };
+	CLR_UINT8  CMD_Memory_Access_Control_Data[] = { 0x28 };  // Portrait?
+	CLR_UINT8  CMD_Pixel_Format_Set_Data[] = { 0x55 };   // 0x55 -> 16 bit 
+	CLR_UINT8  CMD_Frame_Rate_Control_Normal_Data[] = { 0x00, 0x1B };
+	CLR_UINT8  CMD_Display_Function_Control_Data[] = { 0x0A, 0x82, 0x27, 0x00 };
+	CLR_UINT8  CMD_Enable_3G_Data[] = { 0x08 };
+	CLR_UINT8  CMD_Gamma_Set_Data[] = { 0x01 }; // Gamma curve selected (0x01, 0x02, 0x04, 0x08)
+	CLR_UINT8  CMD_Positive_Gamma_Correction_Data[] = { 0x1F, 0x1A, 0x18, 0x0A, 0x0F, 0x06, 0x45, 0X87, 0x32, 0x0A, 0x07, 0x02, 0x07, 0x05, 0x00 }; //gamma set 4
+	CLR_UINT8  CMD_Negative_Gamma_Correction_Data[] = { 0x00, 0x25, 0x27, 0x05, 0x10, 0x09, 0x3A, 0x78, 0x4D, 0x05, 0x18, 0x0D, 0x38, 0x3A, 0x1F };
+	CLR_UINT8  CMD_Column_Address_Set_Data[] = { 0x00, 0x00, 0x00, 0xEF };  // Size = 239
+	CLR_UINT8  CMD_Page_Address_Set_Data[] = { 0x00, 0x00, 0x01, 0x3f };  // Size = 319
+	CLR_UINT8  CMD_Entry_Mode_Set_Data[] = { 0x07 };  // Entry mode set
+	
 
-	DisplayInterface::SendCommandAndData({ CMD_Pixel_Format_Set,0x55 }, 1);
-
-	DisplayInterface::SendCommandAndData({ CMD_Frame_Rate_Control_Normal 0x00, 0x1B }, 2);
-	DisplayInterface::SendCommandAndData({ CMD_Enable_3G,0x08 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Gamma_Set,0x01 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Positive_Gamma_Correction,0x1F, 0x1A, 0x18, 0x0A, 0x0F, 0x06, 0x45, 0X87, 0x32, 0x0A, 0x07, 0x02, 0x07, 0x05, 0x00 }, 15);
-	DisplayInterface::SendCommandAndData({ CMD_Negative_Gamma_Correction,0x00, 0x25, 0x27, 0x05, 0x10, 0x09, 0x3A, 0x78, 0x4D, 0x05, 0x18, 0x0D, 0x38, 0x3A, 0x1F }, 15);
-
-	DisplayInterface::SendCommandAndData({ CMD_Column_Address_Set,0x00, 0x00, 0x00, 0xEF }, 4);
-	DisplayInterface::SendCommandAndData({ CMD_Page_Address_Set,0x00, 0x00, 0x01, 0x3f }, 4);
-
-	DisplayInterface::SendCommandAndData({ CMD_Memory_Write,0 }, 0); // ???
-	DisplayInterface::SendCommandAndData({ CMD_Entry_Mode_Set, 0x07 }, 1);
-	DisplayInterface::SendCommandAndData({ CMD_Display_Function_Control, 0x0A, 0x82, 0x27, 0x00 }, 4);
-	DisplayInterface::SendCommandAndData({ CMD_Sleep_Out, 0x80 }, 0); //??
-																	 // Send Sleep Out command to display : no parameter
-	osDelay(120);
-
-	DisplayInterface::SendCommandAndData({ CMD_Display_ON,0x80 }, 0); //??
-
-	return TRUE;
+	DisplayInterface::SendCommand(CMD_SOFTWARE_RESET);
+	DisplayInterface::DisplayCommandDelay(20);																 // Send Sleep Out command to display : no parameter
+	DisplayInterface::SendCommand(CMD_Display_OFF);
+	DisplayInterface::SendCommandAndData(CMD_Power_Control_A, CMD_Power_Control_A_Data, 5);
+	DisplayInterface::SendCommandAndData(CMD_Power_Control_B, CMD_Power_Control_B_Data, 3);
+	DisplayInterface::SendCommandAndData(CMD_Driver_Timing_Control_A, CMD_Driver_Timing_Control_A_Data, 3);
+	DisplayInterface::SendCommandAndData(CMD_Driver_Timing_Control_B, CMD_Driver_Timing_Control_B_Data, 2);
+	DisplayInterface::SendCommandAndData(CMD_Power_On_Sequence, CMD_Power_On_Sequence_Data, 4);
+	DisplayInterface::SendCommandAndData(CMD_Pump_Ratio_Control, CMD_Pump_Ratio_Control_Data, 1);
+	DisplayInterface::SendCommandAndData(CMD_Power_Control_1, CMD_Power_Control_1_Data, 1);
+	DisplayInterface::SendCommandAndData(CMD_Power_Control_2, CMD_Power_Control_2_Data, 1);
+	DisplayInterface::SendCommandAndData(CMD_VCOM_Control_1, CMD_VCOM_Control_1_Data, 2);
+	DisplayInterface::SendCommandAndData(CMD_VCOM_Control_2, CMD_VCOM_Control_2_Data, 1);
+	DisplayInterface::SendCommandAndData(CMD_Memory_Access_Control, CMD_Memory_Access_Control_Data, 1);  // Portrait?
+	DisplayInterface::SendCommandAndData(CMD_Pixel_Format_Set, CMD_Pixel_Format_Set_Data, 1);   // 0x55 -> 16 bit 
+	DisplayInterface::SendCommandAndData(CMD_Frame_Rate_Control_Normal, CMD_Frame_Rate_Control_Normal_Data, 2);
+	DisplayInterface::SendCommandAndData(CMD_Display_Function_Control, CMD_Display_Function_Control_Data, 4);
+	DisplayInterface::SendCommandAndData(CMD_Enable_3G, CMD_Enable_3G_Data, 1);
+	DisplayInterface::SendCommandAndData(CMD_Gamma_Set, CMD_Gamma_Set_Data, 1); // Gamma curve selected (0x01, 0x02, 0x04, 0x08)
+	DisplayInterface::SendCommandAndData(CMD_Positive_Gamma_Correction, CMD_Positive_Gamma_Correction_Data, 15); //gamma set 4
+	DisplayInterface::SendCommandAndData(CMD_Negative_Gamma_Correction, CMD_Negative_Gamma_Correction_Data, 15);
+	DisplayInterface::DisplayCommandDelay(120);																 // Send Sleep Out command to display : no parameter
+	DisplayInterface::SendCommandAndData(CMD_Column_Address_Set, CMD_Column_Address_Set_Data, 4);  // Size = 239
+	DisplayInterface::SendCommandAndData(CMD_Page_Address_Set, CMD_Page_Address_Set_Data, 4);  // Size = 319
+	DisplayInterface::SendCommand(CMD_Memory_Write);
+	DisplayInterface::SendCommandAndData(CMD_Entry_Mode_Set, CMD_Entry_Mode_Set_Data, 1);  // Entry mode set
+	DisplayInterface::SendCommand(CMD_Sleep_Out);
+	DisplayInterface::DisplayCommandDelay(120);																 // Send Sleep Out command to display : no parameter
+	DisplayInterface::SendCommand(CMD_Display_ON);
+	DisplayInterface::DisplayCommandDelay(120);																 // Send Sleep Out command to display : no parameter
+	DisplayInterface::SendCommand(CMD_NOP);   // End of sequence
+	return true;
 }
 bool Display::Uninitialize()
 {
 	Clear();
-	//FIXME: ??
+	// Anything else to Uninitialize?
 	return TRUE;
 }
 bool Display::SetWindow(CLR_UINT16 x1, CLR_UINT16 y1, CLR_UINT16 x2, CLR_UINT16 y2)
 {
-	CLR_UINT16 x1_x2;
 	CLR_UINT16 Addr1, Addr2;
 
-	switch (Display::Orientation)
+	switch (DisplayAttributes::Orientation)
 	{
 	default:
 		// Invalid! Fall through to portrait mode
 	case PORTRAIT:
 		Addr1 = x1;
 		Addr2 = y1;
-		x1_x2 = (CLR_UINT16)((x2 << 8) + x1);   // pack X-Values into one word            
 		break;
 	case PORTRAIT180:
-		Addr1 = (CLR_UINT16)(SCREEN_SIZE_SHORTER_SIDE - 1 - x1);
-		Addr2 = (CLR_UINT16)(SCREEN_SIZE_LONGER_SIDE - 1 - y1);
-		x1_x2 = (CLR_UINT16)((Addr1 << 8) + (SCREEN_SIZE_SHORTER_SIDE - 1 - x2));    // pack X-Values into one word
-		y1 = (CLR_UINT16)(SCREEN_SIZE_LONGER_SIDE - 1 - y2);
+		Addr1 = (CLR_UINT16)(DisplayAttributes::ShorterSide - 1 - x1);
+		Addr2 = (CLR_UINT16)(DisplayAttributes::LongerSide - 1 - y1);
+		y1 = (CLR_UINT16)(DisplayAttributes::LongerSide - 1 - y2);
 		y2 = Addr2;
 		break;
 	case LANDSCAPE:
-		Addr1 = (CLR_UINT16)(SCREEN_SIZE_SHORTER_SIDE - 1 - y1);
+		Addr1 = (CLR_UINT16)(DisplayAttributes::ShorterSide - 1 - y1);
 		Addr2 = x1;
-		x1_x2 = (CLR_UINT16)((Addr1 << 8) + (SCREEN_SIZE_SHORTER_SIDE - 1 - y2));    // pack X-Values into one word
 		y1 = x1;
 		y2 = x2;
 		break;
 	case LANDSCAPE180:
 		Addr1 = y1;
-		Addr2 = (CLR_UINT16)(SCREEN_SIZE_LONGER_SIDE - 1 - x1);    // pack X-Values into one word
-		x1_x2 = (CLR_UINT16)((y2 << 8) + y1);
-		y1 = (CLR_UINT16)(SCREEN_SIZE_LONGER_SIDE - 1 - x2);
+		Addr2 = (CLR_UINT16)(DisplayAttributes::ShorterSide - 1 - x1);    // pack X-Values into one word
+		y1 = (CLR_UINT16)(DisplayAttributes::LongerSide - 1 - x2);
 		y2 = Addr2;
 		break;
 	}
 
-	// TODO FIXME
-	//Set Window
+	CLR_UINT8  CMD_Column_Address_Set_Data[4];
+	CMD_Column_Address_Set_Data[0] = (Addr1 >> 8) & 0xFF;
+	CMD_Column_Address_Set_Data[1] = Addr1 & 0xFF;
+	CMD_Column_Address_Set_Data[2] = (Addr2 >> 8) & 0xFF;
+	CMD_Column_Address_Set_Data[3] = Addr2 & 0xFF;
 
-	// THIS IS AN EXAMPLE FOR 1289
-	//
-	// CHANGE FOR
-	//
-	// ILI9341
-	//
-	(void)DisplayInterface::SendCommand(0x0044);
-	(void)DisplayInterface::((UINT16)x1_x2);
-	(void)DisplayInterface::(0x0045);
-	(void)DisplayInterface::SendDataWord((UINT16)y1);
-	(void)DisplayInterface::SendCmdWord(0x0046);
-	(void)DisplayInterface::SendDataWord((UINT16)y2);
-	// Set Start Address counter
-	(void)DisplayInterface::SendCmdWord(0x004e);
-	(void)DisplayInterface::SendDataWord((UINT16)Addr1);
-	(void)DisplayInterface::SendCmdWord(0x004f);
-	(void)DisplayInterface::SendDataWord((UINT16)Addr2);
-	(void)DisplayInterface::SendCmdWord(0x0022);
+	CLR_UINT8  CMD_Page_Address_Set_Data[4];
+	CMD_Page_Address_Set_Data[0] = (y1 >> 8) & 0xFF;
+	CMD_Page_Address_Set_Data[1] = y1 & 0xFF;
+	CMD_Page_Address_Set_Data[2] = (y2 >> 8) & 0xFF;
+	CMD_Page_Address_Set_Data[3] = y2 & 0xFF;
+
+	DisplayInterface::SendCommandAndData(CMD_Column_Address_Set, CMD_Column_Address_Set_Data, 4); 
+	DisplayInterface::SendCommandAndData(CMD_Page_Address_Set, CMD_Page_Address_Set_Data, 4);  
+	DisplayInterface::SendCommand(CMD_Memory_Write);
 
 
-	return TRUE;
+
+	return true;
 }
 void Display::PowerSave(PowerSaveState powerState)
 {
+	CLR_UINT8 CMD_POWER_STATE_Data_ON[] = { 0x0000 };
+	CLR_UINT8 CMD_POWER_STATE_Data_SLEEP[] = { 0x0001 };
 	switch (powerState)
 	{
-	case PowerSaveState::SLEEP:
-		DisplayInterface::SendCommand(2);
+	default:
+		// illegal fall through to Power on
+	case PowerSaveState::NORMAL:
+		DisplayInterface::SendCommandAndData(CMD_POWER_STATE, CMD_POWER_STATE_Data_ON, 1);  // leave sleep mode
 		break;
-	case PowerSaveState::STANDBY:
-		DisplayInterface::SendCommand(2);
+	case PowerSaveState::SLEEP:
+		DisplayInterface::SendCommandAndData(CMD_POWER_STATE, CMD_POWER_STATE_Data_SLEEP, 1);  // enter sleep mode
 		break;
 	}
 	return;
@@ -205,156 +222,40 @@ void Display::PowerSave(PowerSaveState powerState)
 void Display::Clear()
 {
 	//reset the cursor pos to the begining
-	Display::m_cursor = 0;
+	// Clear the ILI9341 controller 
 
-	// TODO FIXME
-	//DisplayInterface::Clear();
-
+}
+void Display::DisplayBrightness(CLR_INT16 brightness)
+{
+	_ASSERTE( brightness >= 0 && brightness <= 100);
+	CLR_UINT8  CMD_Write_Display_Brightness_Data[] = { (CLR_UINT8)brightness };
+	DisplayInterface::SendCommandAndData(CMD_Write_Display_Brightness, CMD_Write_Display_Brightness_Data, 1);
 }
 void Display::BitBlt(int width, int height, int widthInWords, CLR_UINT32 data[])
 {
-	_ASSERTE(width == (int)LCD_GetWidth());
-	_ASSERTE(height == (int)LCD_GetHeight());
+	_ASSERTE(width == (int)DisplayAttributes::Width);
+	_ASSERTE(height == (int)DisplayAttributes::Height);
 	_ASSERTE(widthInWords == width / (int)PixelsPerWord());
 
 	BitBltEx(0, 0, width, height, data);
 }
 void Display::BitBltEx(int x, int y, int width, int height, CLR_UINT32 data[])
 {
-	ASSERT((x >= 0) && ((x + width) <= LCD_SCREEN_WIDTH));
-	ASSERT((y >= 0) && ((y + height) <= LCD_SCREEN_HEIGHT));
+	ASSERT((x >= 0) && ((x + width) <= DisplayAttributes::Width));
+	ASSERT((y >= 0) && ((y + height) <= DisplayAttributes::Height));
 
 	CLR_UINT16* StartOfLine_src = (CLR_UINT16*)& data[0];
 	SetWindow(x, y, (x + width - 1), (y + height - 1));
 
-	CLR_UINT16 offset = (y * Display::Width) + x;
+	CLR_UINT16 offset = (y * DisplayAttributes::Width) + x;
 	StartOfLine_src += offset;
 
-	while (height--)
-	{
-		CLR_UINT16* src;
-		int      Xcnt;
-		src = StartOfLine_src;
-		Xcnt = width;
-		while (Xcnt--)
-		{
-			DisplayInterface::SendDataWord(*src++);
-		}
-		StartOfLine_src += Display::Width;
-	}
-}
-void Display::WriteChar(unsigned char c, int row, int col)
-{
-	// MUNEEB - Font_Width refers to font 8x8 or 8x15...so limiting it to 8x8.  tinyclr.proj defines that we are using 8x8
-	//int width = Font_Width();
-	//int height = Font_Height();
-	int width = 8;
-	int height = 8;
 
-	// convert to LCD pixel coordinates
-	row *= height;
-	col *= width;
 
-	if (row > (int)(Display::Height - height)) return;
-	if (col > (int)(Display::Width - width)) return;
-
-	const CLR_UINT8* font = Font_GetGlyph(c);
-	// MUNEEB - SEE NOTE ABOVE
-	//CLR_UINT16 data[height*width];
-	CLR_UINT16 data[8 * 8];
-	int i = 0;
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			// FIXME: fix to allow compilation, code needs fixing
-
-			// CLR_UINT16 val = ILI9341_COLOUR::LCD_COLOR_BLACK;
-			CLR_UINT16 val = 1;
-			// the font data is mirrored
-			// if ((font[y] & (1 << (width - x - 1))) != 0) val |= ILI9341_COLOUR::LCD_COLOR_GREEN;
-			if ((font[y] & (1 << (width - x - 1))) != 0) val |= 1;
-			data[i] = val;
-			i++;
-		}
-	}
-	SetWindow(col, row, col + width - 1, row + height - 1);
-	for (i = 0; i < width * height; i++)
-	{
-		// TODO FIXME
-		(void)data;
-		DisplayInterface::DrawPixel(col, row, data[i);
-	}
-}
-void Display::WriteFormattedChar(unsigned char c)
-{
-	if (c < 32)
-	{
-		switch (c)
-		{
-		case '\b':                      /* backspace, clear previous char and move cursor back */
-			if ((Display::m_cursor % TextColumns()) > 0)
-			{
-				Display::m_cursor--;
-				WriteChar(' ', Display::m_cursor / TextColumns(), Display::m_cursor % TextColumns());
-			}
-			break;
-
-		case '\f':                      /* formfeed, clear screen and home cursor */
-			//Clear();
-			Display::m_cursor = 0;
-			break;
-
-		case '\n':                      /* newline */
-			Display::m_cursor += TextColumns();
-			Display::m_cursor -= (Display::m_cursor % TextColumns());
-			break;
-
-		case '\r':                      /* carriage return */
-			Display::m_cursor -= (Display::m_cursor % TextColumns());
-			break;
-
-		case '\t':                      /* horizontal tab */
-			Display::m_cursor += (Font_TabWidth() - ((Display::m_cursor % TextColumns()) % Font_TabWidth()));
-			// deal with line wrap scenario
-			if ((Display::m_cursor % TextColumns()) < (CLR_UINT32)Font_TabWidth())
-			{
-				// bring the cursor to start of line
-				Display::m_cursor -= (Display::m_cursor % TextColumns());
-			}
-			break;
-
-		case '\v':                      /* vertical tab */
-			Display::m_cursor += TextColumns();
-			break;
-
-		default:
-			//FIXME:   DEBUTRACE2(TRACE_ALWAYS, "Unrecognized control character in LCD_WriteChar: %2u (0x%02x)\r\n", (unsigned int)c, (unsigned int)c);
-			break;
-		}
-	}
-	else
-	{
-		WriteChar(c, Display::m_cursor / TextColumns(), Display::m_cursor % TextColumns());
-		Display::m_cursor++;
-	}
-
-	if (Display::m_cursor >= (TextColumns() * TextRows()))
-	{
-		Display::m_cursor = 0;
-	}
 }
 CLR_UINT32 Display::PixelsPerWord()
 {
-	return ((8 * sizeof(CLR_UINT32)) / DISPLAY_ATTRIBUTES::BITS_PER_PIXEL);
-}
-CLR_UINT32 Display::TextRows()
-{
-	return (Display::Height / Font_Height());
-}
-CLR_UINT32 Display::TextColumns()
-{
-	return (DisplayAttributes::Width / Font_Width());
+	return (32 / DisplayAttributes::BitsPerPixel);
 }
 CLR_UINT32 Display::WidthInWords()
 {
@@ -370,32 +271,22 @@ CLR_UINT32 Display::SizeInBytes()
 }
 CLR_INT32 Display::GetWidth()
 {
-	int Width = DisplayAttributes::Width = 320;
-	switch (Orientation)
-	{
-	case DisplayOrientation::LANDSCAPE:
-	case DisplayOrientation::LANDSCAPE:
-		
-	}
-	return Display::Width;
+	return DisplayAttributes::Width;
 }
 CLR_INT32 Display::GetHeight()
 {
-	return DisplayAttributes::Height = 240;
+	return DisplayAttributes::Height;
 }
 CLR_INT32 Display::GetBitsPerPixel()
 {
 	return DisplayAttributes::BitsPerPixel;
 }
-CLR_UINT32 Display::GetPixelClockDivider()
-{
-	return Display::PixelClockDivider;
-}
 CLR_UINT32 Display::ConvertColor(CLR_UINT32 color)
 {
-	// Only require code if there is a requirement not already supported by the core
-	// 16Bits per pixel is supported by core software and although the ILI9341 supports 
-	// 18 bits per pixel colour would require changes to the initialization routine
+	// Only require code if there is a requirement not already supported by the core.
+	// 16Bits per pixel is supported by core software which is use by this ILI9341 implementation.
+	// 18 bits per pixel colour is possible on ILI9341 controller but would require 
+	// changes to the InitializeDisplayRegisters() routine and Graphics memory used
 	return color;
 }
 CLR_INT32 Display::GetOrientation()
@@ -405,8 +296,42 @@ CLR_INT32 Display::GetOrientation()
 bool Display::ChangeOrientation(DisplayOrientation newOrientation)
 {
 	DisplayAttributes::Orientation = newOrientation;
+	CLR_UINT8  CMD_Memory_Access_Control_Data_Portrait[] = { 0x48 };
+	CLR_UINT8  CMD_Memory_Access_Control_Data_Portrait180[] = { 0x88 };
+	CLR_UINT8  CMD_Memory_Access_Control_Data_Landscape[] = { 0xE8 };
+	CLR_UINT8  CMD_Memory_Access_Control_Data_Landscape180[] = { 0x28 };
+
+	switch (newOrientation)
+	{
+	default:
+		// Invalid! Fall through to portrait mode
+	case DisplayOrientation::PORTRAIT:
+		DisplayAttributes::Height = DisplayAttributes::LongerSide;
+		DisplayAttributes::Width = DisplayAttributes::ShorterSide;
+		DisplayInterface::SendCommandAndData(CMD_Memory_Access_Control, CMD_Memory_Access_Control_Data_Portrait, 1);
+		break;
+	case DisplayOrientation::PORTRAIT180:
+		DisplayAttributes::Height = DisplayAttributes::LongerSide;
+		DisplayAttributes::Width = DisplayAttributes::ShorterSide;
+		DisplayInterface::SendCommandAndData(CMD_Memory_Access_Control, CMD_Memory_Access_Control_Data_Portrait180, 1); /* X and Y axes non-inverted */
+		break;
+	case DisplayOrientation::LANDSCAPE:
+		DisplayAttributes::Height = DisplayAttributes::ShorterSide;
+		DisplayAttributes::Width = DisplayAttributes::LongerSide;
+		DisplayInterface::SendCommandAndData(CMD_Memory_Access_Control, CMD_Memory_Access_Control_Data_Landscape, 1); /* Invert X and Y axes */
+		break;
+	case DisplayOrientation::LANDSCAPE180:
+		DisplayAttributes::Height = DisplayAttributes::ShorterSide;
+		DisplayAttributes::Width = DisplayAttributes::LongerSide;
+		DisplayInterface::SendCommandAndData(CMD_Memory_Access_Control, CMD_Memory_Access_Control_Data_Landscape180, 1); /* Invert X and Y axes */
+		break;
+	}
 	return true;
 }
+//CLR_UINT32* Display::GetFrameBuffer()
+//{
+//	return g_FrameBuffer;
+//}
 
 
 

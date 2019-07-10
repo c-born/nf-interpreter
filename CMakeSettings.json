@@ -256,7 +256,7 @@
       ]
     },
     {
-      "name": "ESP32",
+      "name": "ESP32-WROVER-KIT-4-1",
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [ "gcc-arm" ],
@@ -335,7 +335,7 @@
         },
         {
           "name": "RTOS:STRING",
-          "value": "FREERTOS_ESP32",
+          "value": "FREERTOS/ESP32",
           "type": "STRING"
         },
         {
@@ -505,12 +505,17 @@
         },
         {
           "name": "Target_Graphics_Memory",
-          "value": "targets/FreeRTOS_ESP32/UI_Interface/ESP32-WROVER-B/Graphics_Memory.cpp",
+          "value": "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface/Graphics_Memory_Setup.cpp",
+          "type": "STRING"
+        },
+        {
+          "name": "Target_Graphics_Include",
+          "value": "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface",
           "type": "STRING"
         },
         {
           "name": "Target_Display_Interface",
-          "value": "targets/FreeRTOS_ESP32/UI_Interface/ESP32-WROVER-B/Spi_To_Display.cpp",
+          "value": "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface/Spi_To_Display.cpp",
           "type": "STRING"
         },
         {
@@ -525,7 +530,7 @@
         },
         {
           "name": "Target_TouchPanel_Interface",
-          "value": "targets/FreeRTOS_ESP32/UI_Interface/ESP32-WROVER-B/Spi_To_TouchPanel.cpp",
+          "value": "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface/Spi_To_TouchPanel.cpp",
           "type": "STRING"
         }
       ]

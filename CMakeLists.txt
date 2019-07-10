@@ -55,7 +55,7 @@ endif()
 # list of supported RTOSes
 # when adding a new RTOS add the corresponding string bellow AND...
 # ... also on the compare block bellow
-set(RTOS_SUPPORTED "CHIBIOS" "FREERTOS_ESP32" "TI_SIMPLELINK" CACHE INTERNAL "supported RTOS options")
+set(RTOS_SUPPORTED "CHIBIOS" "FREERTOS_ESP32" "FREERTOS/ESP32" "TI_SIMPLELINK" CACHE INTERNAL "supported RTOS options")
 
 list(FIND RTOS_SUPPORTED ${RTOS} RTOS_INDEX)
 if(RTOS_INDEX EQUAL -1)
@@ -66,6 +66,7 @@ endif()
 
 string(COMPARE EQUAL "CHIBIOS" "${RTOS}"  RTOS_CHIBIOS_CHECK)
 string(COMPARE EQUAL "FREERTOS_ESP32" "${RTOS}" RTOS_FREERTOS_ESP32_CHECK)
+string(COMPARE EQUAL "FREERTOS/ESP32" "${RTOS}"  RTOS_FREERTOS_ESP32_CHECK)
 string(COMPARE EQUAL "TI_SIMPLELINK" "${RTOS}" RTOS_TI_SIMPLELINK_CHECK)
 
 ##########################################################################

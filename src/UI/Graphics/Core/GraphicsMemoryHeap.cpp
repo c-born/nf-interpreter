@@ -20,31 +20,17 @@ static struct BlockHeader
 	CLR_UINT32 head_guard;
 } *g_s_FirstCluster;
 
-//struct BlockHeader
-//{
-//	struct BlockHeader* next;
-//	struct BlockHeader* prev;
-//	CLR_UINT32 length;
-//	CLR_UINT32 signature;
-//	CLR_UINT32 head_guard;
-//};
-//static struct BlockHeader* g_s_FirstCluster;
 
 static const CLR_UINT32 c_Free = 0xDEADBEEF;
 static const CLR_UINT32 c_Busy = 0xDEADBE5E;
 static const CLR_UINT32 c_Guard = 0xbab1f00d;
 
-//
-//extern int HeapBegin;
-//extern int HeapEnd;
-//extern int CustomHeapBegin;
-//extern int CustomHeapEnd;
-//extern int StackBottom;
-//extern int StackTop;
-
 
 void GraphicsMemoryHeap::Initialize( void* pHeapBuffer, CLR_UINT32 length )
 {
+	GraphicsMemory::GraphicsMemorySetup();
+
+
     struct BlockHeader **s_FirstCluster = (struct BlockHeader **) &g_s_FirstCluster;
     *s_FirstCluster = (struct BlockHeader *) pHeapBuffer;
     (*s_FirstCluster)->length     = length;
@@ -196,7 +182,7 @@ void* GraphicsMemoryHeap::ReAllocate( void* pHeapBlock, CLR_UINT32 len )
         struct BlockHeader* blk = (struct BlockHeader*)pHeapBlock; blk--;
         memcpy( p, pHeapBlock, len > blk->length ? blk->length : len );
         GraphicsMemoryHeap::Release(pHeapBlock);
-        ptr = p;
+		pHeapBlock = p;
     }
     return p;
 }

@@ -4,7 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
-#include "Font.h"
+#include "Graphics.h"
 
 CLR_UINT32 CLR_GFX_FontDescription::GetCharacterExSize() const
 {

@@ -6,6 +6,7 @@
 
 #include "Graphics.h"
 #include "TouchPanel_native.h"
+#include "TouchPanel.h"
 
 HRESULT Library_touch_native_TouchEventProcessor::ProcessEvent___NativeBaseEvent__U4__U4__mscorlibSystemDateTime( CLR_RT_StackFrame& stack )
 {

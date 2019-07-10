@@ -4,6 +4,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
+#include "Graphics.h"
 #include "TouchPanel_native.h"
 
 

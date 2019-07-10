@@ -5,10 +5,11 @@
 //
 
 
-#ifndef _SPOT_TOUCH_NATIVE_H_
-#define _SPOT_TOUCH_NATIVE_H_
+#ifndef _TOUCHPANEL_NATIVE_H_
+#define _TOUCHPANEL_NATIVE_H_
 
 #include "Graphics.h"
+
 
 struct Library_touch_native_Ink
 {
@@ -73,7 +74,6 @@ struct Library_native_BaseEvent
 
 };
 
-
 struct Library_native_Touch_TouchEvent
 {
     static const int FIELD__Time = 3;
@@ -118,7 +118,4 @@ struct Library_native_Touch_TouchScreenEventArgs
 };
 
 
-
-extern const CLR_RT_NativeAssemblyData g_CLR_AssemblyNative_Touch;
-
-#endif  //_SPOT_TOUCH_NATIVE_H_
+#endif  //_TOUCHPANEL_NATIVE_H_

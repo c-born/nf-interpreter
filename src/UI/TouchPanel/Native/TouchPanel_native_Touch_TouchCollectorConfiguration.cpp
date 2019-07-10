@@ -4,18 +4,17 @@
 // See LICENSE file in the project root for full license information.
 //
 
-#include "Graphcis.h"
+#include "Graphics.h"
+#include "TouchPanel.h"
 #include "TouchPanel_native.h"
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
 HRESULT Library_touch_native_TouchCollectorConfiguration::EnableTouchCollection___STATIC__VOID__I4__I4__I4__I4__I4__GraphicsBitmap( CLR_RT_StackFrame& stack )
 {
     NANOCLR_HEADER();
+	NANOCLR_SET_AND_LEAVE(stack.NotImplementedStub());
+	NANOCLR_NOCLEANUP();
 
-    NANOCLR_NOCLEANUP_NOLABEL();   
 }
-#pragma GCC diagnostic pop
 
 HRESULT Library_touch_native_TouchCollectorConfiguration::GetTouchPoints___STATIC__VOID__BYREF_I4__SZARRAY_I2__SZARRAY_I2( CLR_RT_StackFrame& stack )
 {
@@ -35,7 +34,7 @@ HRESULT Library_touch_native_TouchCollectorConfiguration::GetTouchPoints___STATI
     sx = pArgs[ 0 ].DereferenceArray();  FAULT_ON_NULL(sx);        
     sy = pArgs[ 1 ].DereferenceArray();  FAULT_ON_NULL(sy);
 
-    NANOCLR_CHECK_HRESULT(TOUCH_PANEL_GetTouchPoints( 
+    NANOCLR_CHECK_HRESULT( TouchPanel_Driver::GetTouchPoints(
                                                      &count, 
                                                      (CLR_INT16*)sx->GetFirstElement(), 
                                                      (CLR_INT16*)sy->GetFirstElement()
@@ -72,7 +71,7 @@ HRESULT Library_touch_native_TouchCollectorConfiguration::GetTouchInput___STATIC
 
     flags &= ~TouchInfo_Set;
     
-    NANOCLR_CHECK_HRESULT(TOUCH_PANEL_GetSetTouchInfo( 
+    NANOCLR_CHECK_HRESULT(TouchPanel_Driver::GetSetTouchInfo(
                                                      flags,
                                                      &param1,
                                                      &param2,
@@ -89,7 +88,6 @@ HRESULT Library_touch_native_TouchCollectorConfiguration::GetTouchInput___STATIC
 
     NANOCLR_NOCLEANUP();
 }
-
 
 HRESULT Library_touch_native_TouchCollectorConfiguration::SetTouchInput___STATIC__VOID__TouchTouchCollectorConfigurationTouchInput__I4__I4__I4( CLR_RT_StackFrame& stack )
 {
@@ -115,7 +113,7 @@ HRESULT Library_touch_native_TouchCollectorConfiguration::SetTouchInput___STATIC
 
     flags |= TouchInfo_Set;
     
-    NANOCLR_CHECK_HRESULT(TOUCH_PANEL_GetSetTouchInfo( 
+    NANOCLR_CHECK_HRESULT(TouchPanel_Driver::GetSetTouchInfo(
                                                      flags,
                                                      &param1,
                                                      &param2,

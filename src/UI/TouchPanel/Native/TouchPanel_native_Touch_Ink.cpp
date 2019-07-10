@@ -7,7 +7,8 @@
 
 #include "Graphics.h"
 #include "TouchPanel_native.h"
-#include "Ink.h"
+#include "TouchPanel.h"
+#include "Graphics_native.h"
 
 
 CLR_RT_HeapBlock* Library_touch_native_Ink::m_InkPinnedBitmap = NULL;
@@ -71,7 +72,7 @@ HRESULT Library_touch_native_Ink::SetInkRegion___STATIC__VOID__U4__I4__I4__I4__I
         NANOCLR_SET_AND_LEAVE(CLR_E_INVALID_PARAMETER);
     }
 
-    NANOCLR_CHECK_HRESULT(Ink_SetRegion( &inkRegionInfo ));
+    NANOCLR_CHECK_HRESULT(Ink_Driver::SetRegion( &inkRegionInfo ));
 
     NANOCLR_NOCLEANUP();   
 }
@@ -82,7 +83,7 @@ HRESULT Library_touch_native_Ink::ResetInkRegion___STATIC__VOID( CLR_RT_StackFra
 {
     NANOCLR_HEADER();
 
-    NANOCLR_CHECK_HRESULT(Ink_ResetRegion());
+    NANOCLR_CHECK_HRESULT(Ink_Driver::ResetRegion());
 
     NANOCLR_NOCLEANUP();  
 }

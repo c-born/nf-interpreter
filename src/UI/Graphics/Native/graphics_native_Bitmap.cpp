@@ -621,7 +621,7 @@ HRESULT Library_graphics_native_Bitmap::GetBitmap___SZARRAY_U1( CLR_RT_StackFram
     {
         for (CLR_UINT32 x = 0; x < bitmap->m_bm.m_width; x++, pixel++)
         {
-            *pixel = Graphics_GetPixel( bitmap->m_palBitmap, x, y );
+            *pixel = Graphics_Driver::GetPixel( bitmap->m_palBitmap, x, y );
         }
     }
 

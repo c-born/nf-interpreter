@@ -7,20 +7,139 @@
 #ifndef _GRAPHICS_H_
 #define _GRAPHICS_H_ 1
 
+
 #include "nanoCLR_Types.h"
 #include "nanoCLR_Interop.h"
 #include "nanoCLR_Runtime.h"
 #include "nanoCLR_Platformdef.h"
-#include "nanohal.h"
-#include "Font.h"
+//#include "nanohal.h"
+#include "nanoHAL_v2.h"
+#include "nf_errors_exceptions.h"
 #include "GraphicsMemoryHeap.h"
 
+
+// ???? Redefined below but gets past the compile error of not defined
+// CLR_GFX_Font needs CLR_GFX_Bitmap  and CLR_GFX_Bitmap needs CLR_GFX_Font
 struct CLR_GFX_Bitmap;
 struct CLR_GFX_Font;
 
 #define __min(a,b) (((a) < (b)) ? (a) : (b))
 #define abs(a) (((a) < 0) ? -(a) : (a))
 
+struct CLR_GFX_BitmapDescription
+{
+	// !!!!WARNING!!!!
+	// These fields should correspond to CLR_GFX_BitmapDescription in GenerateResource.cs
+	// and should be 4-byte aligned in size. When these fields are changed, the version number 
+	// of the tinyresource file should be incremented, the tinyfnts should be updated (buildhelper -convertfont ...)
+	// and the MMP should also be updated as well.
+	CLR_UINT32 m_width;
+	CLR_UINT32 m_height;
+	CLR_UINT16 m_flags;
+	CLR_UINT8  m_bitsPerPixel;
+	CLR_UINT8  m_type;
+
+	static const CLR_UINT16 c_ReadOnly = 0x0001;
+	static const CLR_UINT16 c_Compressed = 0x0002;
+	static const CLR_UINT8 c_CompressedRun = 0x80;
+	static const CLR_UINT8 c_CompressedRunSet = 0x40;
+	static const CLR_UINT8 c_CompressedRunLengthMask = 0x3f;
+	static const CLR_UINT8 c_UncompressedRunLength = 7;
+	static const CLR_UINT8 c_CompressedRunOffset = c_UncompressedRunLength + 1;
+
+	//static // Note that these type definitions has to match the ones defined in Bitmap.BitmapImageType enum defined in Graphics.cs
+	static const CLR_UINT8 c_TypeTinyCLRBitmap = 0;
+	static const CLR_UINT8 c_TypeGif = 1;
+	static const CLR_UINT8 c_TypeJpeg = 2;
+	static const CLR_UINT8 c_TypeBmp = 3; // The windows .bmp format
+
+	// When m_bitsPerPixel == c_NativeBpp it means that the data in this bitmap is in the native PAL graphics 
+	// format, the exact bit depth and format is something the CLR is abstracted away from. 
+	static const int c_NativeBpp = 0;
+	static const CLR_INT32 c_MaxWidth = 524287;  // 0x7ffff;
+	static const CLR_INT32 c_MaxHeight = 65535;   // 0x0ffff;
+	bool BitmapDescription_Initialize(int width, int height, int bitsPerPixel);
+	int GetTotalSize() const;
+	int GetWidthInWords() const;
+};
+struct CLR_GFX_FontMetrics
+{
+	CLR_UINT16 m_height;
+	CLR_INT16  m_offset; // The bitmap could be actually smaller than the logical font height.
+	CLR_INT16  m_ascent;
+	CLR_INT16  m_descent;
+	CLR_INT16  m_internalLeading;
+	CLR_INT16  m_externalLeading;
+	CLR_INT16  m_aveCharWidth;
+	CLR_INT16  m_maxCharWidth;
+};
+struct CLR_GFX_FontMetricsExtended : public CLR_GFX_FontMetrics
+{
+	int m_offsetX;
+	int m_offsetY;
+	int m_marginLeft;
+	int m_marginRight;
+};
+
+struct CLR_GFX_FontDescription
+{
+	static const CLR_UINT16 c_Bold = 0x0001;
+	static const CLR_UINT16 c_Italic = 0x0002;
+	static const CLR_UINT16 c_Underline = 0x0004;
+	static const CLR_UINT16 c_FontEx = 0x0008;
+	static const CLR_UINT16 c_AntiAliasMask = 0x00F0;
+	static const CLR_UINT16 c_AntiAliasShift = 4;
+
+	CLR_GFX_FontMetrics m_metrics;
+	CLR_UINT16          m_ranges;
+	CLR_UINT16          m_characters;
+	CLR_UINT16          m_flags;
+	CLR_UINT16          m_pad;
+
+	CLR_UINT32 GetRangeSize() const;
+	CLR_UINT32 GetCharacterSize() const;
+	CLR_UINT32 GetCharacterExSize() const;
+	CLR_UINT32 GetRangeExSize() const;
+};
+struct CLR_GFX_FontDescriptionEx
+{
+	CLR_UINT32 m_antiAliasSize;
+	CLR_UINT32 GetAntiAliasSize() const;
+};
+struct CLR_GFX_FontCharacterRange
+{
+	CLR_UINT32 m_indexOfFirstFontCharacter;
+	CLR_UINT16 m_firstChar;
+	CLR_UINT16 m_lastChar;
+	CLR_UINT32 m_rangeOffset; // the x-offset into the bitmap for this range.
+};
+struct CLR_GFX_FontCharacterRangeEx
+{
+	CLR_UINT32 m_offsetAntiAlias;
+};
+struct CLR_GFX_FontCharacter
+{
+	CLR_UINT16 m_offset;
+	CLR_INT8   m_marginLeft;
+	CLR_INT8   m_marginRight;
+};
+struct CLR_GFX_FontCharacterEx
+{
+	static const CLR_UINT16 c_offsetNoAntiAlias = 0xFFFF;
+	CLR_UINT16 m_offsetAntiAlias;
+};
+struct CLR_GFX_FontCharacterInfo
+{
+	bool       isValid;
+	CLR_INT8   marginLeft;
+	CLR_INT8   marginRight;
+	CLR_UINT32 offset;
+	CLR_UINT16 innerWidth;
+	CLR_UINT16 width;
+	CLR_UINT16 height;
+	CLR_UINT8* antiAlias;
+	CLR_UINT8  iAntiAlias;
+};
 struct GFX_Rect
 {
 	int left;
@@ -52,6 +171,192 @@ struct GFX_Pen
 	CLR_UINT32 color;
 	int thickness;
 };
+struct Draw4PointsRoundedRectParams
+{
+	int x1;
+	int y1;
+	int x2;
+	int y2;
+	GFX_Pen* pen;
+	GFX_Brush* brush;
+	int lastFillOffsetY;
+};
+struct Draw4PointsEllipseParams
+{
+	int centerX;
+	int centerY;
+	GFX_Pen* pen;
+	GFX_Brush* brush;
+	int lastFillOffsetY;
+};
+struct ConvertToNativeHelperParam
+{
+	CLR_UINT32* srcFirstWord;
+	CLR_UINT32  srcWidthInWords;
+	union
+	{
+		CLR_UINT32* srcCur1BppWord;
+		CLR_UINT16* srcCur16BppPixel;
+	};
+	CLR_UINT32  srcCur1BppPixelMask;
+};
+struct RADIAN
+{
+	float cos;
+	float sin;
+};
+struct DivHelper
+{
+	// DivHelper is a support class used internally to assist calculating gradient fills
+	// DivHelper uses the midpoint technique to perform integer division using only addition and few multiplications.
+	// This is useful when we need to calculate y = a*x / b + c over a range of x values. All we need is a starting
+	// point where the value of y is known.
+	// Usage:
+	// For example, we have f(x) = d*x / e + f, where we know f(n) = m
+	// We construct the DivHelper struct by
+	//          DivHelper helper(d, e, m)
+	// By calling helper.Next(), we will get the result of f(n), f(n+1), f(n+2) ... etc.
+	// Note that if b is 0, Next() will always return initY
+	int a;
+	int b;
+	int D;
+	int y;
+	int stride;
+	int DIncStride;
+	int DIncStridePlus1;
+	bool first;
+
+	DivHelper(int _a, int _b, int initY)
+	{
+		// a and b are the constant in the formula y = a*x / b + c
+		//       initY is the initial value of Y
+		a = _a;
+		b = _b;
+		if (b != 0) stride = a / b;
+		DIncStride = 2 * (a - b * stride);
+		DIncStridePlus1 = 2 * (a - b * (stride + 1));
+		Reset(initY);
+	}
+	int Next()  // return the next y value.
+	{
+		if (first)
+		{
+			if (b == 0) return y; // if b == 0, first will always be true
+
+			first = false;
+			return y;
+		}
+		if (D > 0)
+		{
+			D += DIncStride;
+			y += stride;
+		}
+		else
+		{
+			D += DIncStridePlus1;
+			y += stride + 1;
+		}
+		return y;
+	}
+	void Reset(int initY)  // set a new initY value.
+	{
+		y = initY;
+		D = 2 * a - b * (2 * stride + 1);
+		first = true;
+	}
+};
+static const RADIAN radian[] = {
+	{ 1.0f, 0.0f },
+	{ 0.999847695156391f, 0.017452406437284f },
+	{ 0.999390827019096f, 0.034899496702501f },
+	{ 0.998629534754574f, 0.052335956242944f },
+	{ 0.997564050259824f, 0.069756473744125f },
+	{ 0.996194698091746f, 0.087155742747658f },
+	{ 0.994521895368273f, 0.104528463267653f },
+	{ 0.992546151641322f, 0.121869343405147f },
+	{ 0.990268068741570f, 0.139173100960065f },
+	{ 0.987688340595138f, 0.156434465040231f },
+	{ 0.984807753012208f, 0.173648177666930f },
+	{ 0.981627183447664f, 0.190808995376545f },
+	{ 0.978147600733806f, 0.207911690817759f },
+	{ 0.974370064785235f, 0.224951054343865f },
+	{ 0.970295726275996f, 0.241921895599668f },
+	{ 0.965925826289068f, 0.258819045102521f },
+	{ 0.961261695938319f, 0.275637355816999f },
+	{ 0.956304755963035f, 0.292371704722737f },
+	{ 0.951056516295154f, 0.309016994374947f },
+	{ 0.945518575599317f, 0.325568154457157f },
+	{ 0.939692620785908f, 0.342020143325669f },
+	{ 0.933580426497202f, 0.358367949545300f },
+	{ 0.927183854566787f, 0.374606593415912f },
+	{ 0.920504853452440f, 0.390731128489274f },
+	{ 0.913545457642601f, 0.406736643075800f },
+	{ 0.906307787036650f, 0.422618261740699f },
+	{ 0.898794046299167f, 0.438371146789077f },
+	{ 0.891006524188368f, 0.453990499739547f },
+	{ 0.882947592858927f, 0.469471562785891f },
+	{ 0.874619707139396f, 0.484809620246337f },
+	{ 0.866025403784439f, 0.500000000000000f },
+	{ 0.857167300702112f, 0.515038074910054f },
+	{ 0.848048096156426f, 0.529919264233205f },
+	{ 0.838670567945424f, 0.544639035015027f },
+	{ 0.829037572555042f, 0.559192903470747f },
+	{ 0.819152044288992f, 0.573576436351046f },
+	{ 0.809016994374947f, 0.587785252292473f },
+	{ 0.798635510047293f, 0.601815023152048f },
+	{ 0.788010753606722f, 0.615661475325658f },
+	{ 0.777145961456971f, 0.629320391049837f },
+	{ 0.766044443118978f, 0.642787609686539f },
+	{ 0.754709580222772f, 0.656059028990507f },
+	{ 0.743144825477394f, 0.669130606358858f },
+	{ 0.731353701619171f, 0.681998360062498f },
+	{ 0.719339800338651f, 0.694658370458997f },
+	{ 0.707106781186548f, 0.707106781186547f },
+	{ 0.694658370458997f, 0.719339800338651f },
+	{ 0.681998360062498f, 0.731353701619170f },
+	{ 0.669130606358858f, 0.743144825477394f },
+	{ 0.656059028990507f, 0.754709580222772f },
+	{ 0.642787609686539f, 0.766044443118978f },
+	{ 0.629320391049838f, 0.777145961456971f },
+	{ 0.615661475325658f, 0.788010753606722f },
+	{ 0.601815023152048f, 0.798635510047293f },
+	{ 0.587785252292473f, 0.809016994374947f },
+	{ 0.573576436351046f, 0.819152044288992f },
+	{ 0.559192903470747f, 0.829037572555042f },
+	{ 0.544639035015027f, 0.838670567945424f },
+	{ 0.529919264233205f, 0.848048096156426f },
+	{ 0.515038074910054f, 0.857167300702112f },
+	{ 0.500000000000000f, 0.866025403784439f },
+	{ 0.484809620246337f, 0.874619707139396f },
+	{ 0.469471562785891f, 0.882947592858927f },
+	{ 0.453990499739547f, 0.891006524188368f },
+	{ 0.438371146789077f, 0.898794046299167f },
+	{ 0.422618261740699f, 0.906307787036650f },
+	{ 0.406736643075800f, 0.913545457642601f },
+	{ 0.390731128489274f, 0.920504853452440f },
+	{ 0.374606593415912f, 0.927183854566787f },
+	{ 0.358367949545300f, 0.933580426497202f },
+	{ 0.342020143325669f, 0.939692620785908f },
+	{ 0.325568154457157f, 0.945518575599317f },
+	{ 0.309016994374947f, 0.951056516295154f },
+	{ 0.292371704722737f, 0.956304755963035f },
+	{ 0.275637355816999f, 0.961261695938319f },
+	{ 0.258819045102521f, 0.965925826289068f },
+	{ 0.241921895599668f, 0.970295726275996f },
+	{ 0.224951054343865f, 0.974370064785235f },
+	{ 0.207911690817759f, 0.978147600733806f },
+	{ 0.190808995376545f, 0.981627183447664f },
+	{ 0.173648177666930f, 0.984807753012208f },
+	{ 0.156434465040231f, 0.987688340595138f },
+	{ 0.139173100960066f, 0.990268068741570f },
+	{ 0.121869343405147f, 0.992546151641322f },
+	{ 0.104528463267653f, 0.994521895368273f },
+	{ 0.087155742747658f, 0.996194698091746f },
+	{ 0.069756473744125f, 0.997564050259824f },
+	{ 0.052335956242944f, 0.998629534754574f },
+	{ 0.034899496702501f, 0.999390827019096f },
+	{ 0.017452406437283f, 0.999847695156391f },
+};
 
 // This is the callback signature for Graphics_SetPixelsHelper(). This callback will be called once for each pixel in the area specified.
 // The parameters are as follow:
@@ -70,7 +375,6 @@ struct GFX_Pen
 //             persisted between each callback call
 // Return Value -- The color of the pixel
 typedef CLR_UINT32(*GFX_SetPixelsCallback) (int, int, CLR_UINT32, CLR_UINT16&, void*);
-
 // Graphics_SetPixelsHelper is designed to allow the caller to fill an area of a bitmap without incurring unnecessary cost
 // of calculating the x, y position for each pixel.
 // The parameters are as follow:
@@ -90,9 +394,8 @@ typedef CLR_UINT32(*GFX_SetPixelsCallback) (int, int, CLR_UINT32, CLR_UINT16&, v
 //                                        the order to be increasing x, decreasing y (bottom to top, and within each row, 
 //                                        left to right).
 // 4) param -- a custom pointer that's passed into each callback.
-void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect, CLR_UINT32 config, GFX_SetPixelsCallback callback, void* param);
-
- struct PAL_GFX_Bitmap
+void SetPixelsHelper(const GFX_Rect& rect, CLR_UINT32 config, GFX_SetPixelsCallback callback, void* param);
+struct PAL_GFX_Bitmap
 {
 	int width;
 	int height;
@@ -112,47 +415,7 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 	static const CLR_UINT32 c_SetPixelsConfig_NoClipChecks = 0x00000002;
 	static const CLR_UINT32 c_SetPixelsConfig_ReverseY = 0x00000004;
 };
- struct CLR_GFX_BitmapDescription
-{
-	// !!!!WARNING!!!!
-	// These fields should correspond to CLR_GFX_BitmapDescription in GenerateResource.cs
-	// and should be 4-byte aligned in size. When these fields are changed, the version number 
-	// of the tinyresource file should be incremented, the tinyfnts should be updated (buildhelper -convertfont ...)
-	// and the MMP should also be updated as well.
-	CLR_UINT32 m_width;
-	CLR_UINT32 m_height;
-	CLR_UINT16 m_flags;
-	CLR_UINT8  m_bitsPerPixel;
-	CLR_UINT8  m_type;
-
-	static const CLR_UINT16 c_ReadOnly = 0x0001;
-	static const CLR_UINT16 c_Compressed = 0x0002;
-	
-	static const CLR_UINT8 c_CompressedRun = 0x80;
-	static const CLR_UINT8 c_CompressedRunSet = 0x40;
-	static const CLR_UINT8 c_CompressedRunLengthMask = 0x3f;
-	static const CLR_UINT8 c_UncompressedRunLength = 7;
-	static const CLR_UINT8 c_CompressedRunOffset = c_UncompressedRunLength + 1;
-	
-	//static // Note that these type definitions has to match the ones defined in Bitmap.BitmapImageType enum defined in Graphics.cs
-	static const CLR_UINT8 c_TypeTinyCLRBitmap = 0;
-	static const CLR_UINT8 c_TypeGif = 1;
-	static const CLR_UINT8 c_TypeJpeg = 2;
-	static const CLR_UINT8 c_TypeBmp = 3; // The windows .bmp format
-
-	// When m_bitsPerPixel == c_NativeBpp it means that the data in this bitmap is in the native PAL graphics 
-	// format, the exact bit depth and format is something the CLR is abstracted away from. 
-	static const int c_NativeBpp = 0;
-
-	static const CLR_INT32 c_MaxWidth = 524287;  // 0x7ffff;
-	static const CLR_INT32 c_MaxHeight = 65535;   // 0x0ffff;
-
-	bool BitmapDescription_Initialize(int width, int height, int bitsPerPixel);
-
-	int GetTotalSize() const;
-	int GetWidthInWords() const;
-};
- struct CLR_GFX_Bitmap
+struct CLR_GFX_Bitmap
 {
 	CLR_GFX_BitmapDescription m_bm;         // Initialized by the caller!
 	PAL_GFX_Bitmap            m_palBitmap;
@@ -178,20 +441,20 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 	static const CLR_UINT32 c_DrawText_TrimmingUnused = 0x00000048;
 	static const CLR_UINT32 c_DrawText_TrimmingMask = 0x00000048;
 
-	HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_GFX_BitmapDescription& bm);
-	HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, CLR_UINT32 size, CLR_RT_Assembly* assm);
-	HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size, const CLR_UINT8 type);
+	static HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_GFX_BitmapDescription& bm);
+	static HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, CLR_UINT32 size, CLR_RT_Assembly* assm);
+	static HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size, const CLR_UINT8 type);
 
-	HRESULT CreateInstanceJpeg(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size);
-	HRESULT CreateInstanceGif(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size);
-	HRESULT CreateInstanceBmp(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size);
+	static HRESULT CreateInstanceJpeg(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size);
+	static HRESULT CreateInstanceGif(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size);
+	static HRESULT CreateInstanceBmp(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, const CLR_UINT32 size);
 
-	HRESULT GetInstanceFromGraphicsHeapBlock(const CLR_RT_HeapBlock& ref, CLR_GFX_Bitmap*& bitmap);
-	HRESULT DeleteInstance(CLR_RT_HeapBlock& ref);
+	static HRESULT GetInstanceFromGraphicsHeapBlock(const CLR_RT_HeapBlock& ref, CLR_GFX_Bitmap*& bitmap);
+	static HRESULT DeleteInstance(CLR_RT_HeapBlock& ref);
 
-	CLR_UINT32 CreateInstanceJpegHelper(int x, int y, CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
-	CLR_UINT32 ConvertToNative1BppHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
-	CLR_UINT32 ConvertToNative16BppHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
+	static CLR_UINT32 CreateInstanceJpegHelper(int x, int y, CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
+	static CLR_UINT32 ConvertToNative1BppHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
+	static CLR_UINT32 ConvertToNative16BppHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
 
 	void Bitmap_Initialize();
 	void Clear();
@@ -204,13 +467,13 @@ void Graphics_SetPixelsHelper(const PAL_GFX_Bitmap& bitmap, const GFX_Rect& rect
 	void DrawEllipse(const GFX_Pen& pen, const GFX_Brush& brush, int x, int y, int radiusX, int radiusY);
 	void DrawImage(const GFX_Rect& dst, const CLR_GFX_Bitmap& bitmapSrc, const GFX_Rect& src, CLR_UINT16 opacity);
 	void RotateImage(int angle, const GFX_Rect& dst, const CLR_GFX_Bitmap& bitmapSrc, const GFX_Rect& src, CLR_UINT16 opacity);
-	
+
 	void DrawText(LPCSTR str, CLR_GFX_Font& font, CLR_UINT32 color, int x, int y);
-	void HRESULT DrawTextInRect(LPCSTR& szText, int& xRelStart, int& yRelStart, int& renderWidth, int& renderHeight, CLR_GFX_Bitmap* bm, int x, int y, int width, int height, CLR_UINT32 dtFlags, CLR_UINT32 color, CLR_GFX_Font* font);
+	static HRESULT DrawTextInRect(LPCSTR& szText, int& xRelStart, int& yRelStart, int& renderWidth, int& renderHeight, CLR_GFX_Bitmap* bm, int x, int y, int width, int height, CLR_UINT32 dtFlags, CLR_UINT32 color, CLR_GFX_Font* font);
 	void Screen_Flush(CLR_GFX_Bitmap& bitmap, CLR_UINT16 x, CLR_UINT16 y, CLR_UINT16 width, CLR_UINT16 height);
 	void SetPixelsHelper(const GFX_Rect& rect, CLR_UINT32 config, GFX_SetPixelsCallback callback, void* param);
 	void Relocate();
-	void RelocationHandler(CLR_RT_HeapBlock_BinaryBlob* ptr);
+	static void RelocationHandler(CLR_RT_HeapBlock_BinaryBlob* ptr);
 private:
 	void Decompress(const CLR_UINT8* data, const CLR_GFX_BitmapDescription* bm, CLR_UINT32 size);
 	void Decompress(const CLR_UINT8* data, CLR_UINT32 size);
@@ -218,6 +481,55 @@ private:
 
 	PROHIBIT_ALL_CONSTRUCTORS(CLR_GFX_Bitmap);
 };
+struct CLR_GFX_Font
+{
+	static const int FIELD__m_font = 1;
+	static const CLR_INT32 c_DefaultKerning = 1024;		// Must keep in sync with Microsoft.SPOT.Font.DefaultKerning
+	static const CLR_UINT16 c_UnicodeReplacementCharacter = 0xFFFD;
+
+	CLR_GFX_FontDescription m_font;
+	CLR_GFX_FontCharacterRange* m_ranges;
+	CLR_GFX_FontCharacter* m_chars;
+	CLR_GFX_Bitmap m_bitmap;
+	CLR_GFX_FontCharacterInfo m_defaultChar;
+	CLR_GFX_FontDescriptionEx m_fontEx;
+	CLR_GFX_FontCharacterRangeEx* m_rangesEx;
+	CLR_GFX_FontCharacterEx* m_charsEx;
+	CLR_UINT8* m_antiAliasingData;
+
+	static HRESULT CreateInstance(CLR_RT_HeapBlock& ref, const CLR_UINT8* data, CLR_RT_Assembly* assm);
+	void Font_Initialize();
+	int StringOut(LPCSTR str, int maxChars, CLR_INT32 kerning, CLR_GFX_Bitmap* bm, int xPos, int yPos, CLR_UINT32 color);
+	void CountCharactersInWidth(LPCSTR str, int maxChars, int width, int& totWidth, bool fWordWrap, LPCSTR& strNext, int& numChars);
+	void DrawChar(CLR_GFX_Bitmap* bitmap, CLR_GFX_FontCharacterInfo& chr, int xDst, int yDst, CLR_UINT32 color);
+	static CLR_UINT32 DrawCharHelper(int x, int y, CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
+	void GetCharInfo(CLR_UINT16 c, CLR_GFX_FontCharacterInfo& chrEx);
+	void Relocate();
+	static void RelocationHandler(CLR_RT_HeapBlock_BinaryBlob* ptr);
+
+	PROHIBIT_ALL_CONSTRUCTORS(CLR_GFX_Font);
+};
+struct DrawCharHelperParam
+{
+	int originalDstX;
+	int originalDstY;
+	int srcX;
+	int srcY;
+	CLR_UINT32* srcFirstWord;
+	CLR_UINT32  srcFirstPixelMask;
+	CLR_UINT32  srcCurPixelMask;
+	CLR_UINT32* srcCurWord;
+	CLR_UINT32  srcWidthInWords;
+	CLR_UINT32 color;
+	CLR_UINT8* antiAlias;
+	CLR_UINT8   iAntiAlias;
+	CLR_UINT8   antiAliasStep;
+	CLR_UINT8   antiAliasShift;
+	CLR_UINT8   antiAliasShiftFirstPixel;
+	CLR_UINT32  antiAliasMask;
+	CLR_UINT32  antiAliasMaskFirstPixel;
+};
+int GetCharInfoCmp(const void* c, const void* r);
 
 struct Graphics_Driver
 {
@@ -297,9 +609,107 @@ public:
 	static void Draw4PointsRoundedRect(const PAL_GFX_Bitmap& bitmap, int offsetX, int offsetY, void* params);
 };
 
-// The PAL Graphics API uses the 24bit BGR color space, the one that's used for TinyCore and
+// The PAL Graphics API uses the 24bit BGR color space, the one that's used for the
 // CLR. It is the responsibility of whoever is implementing the PAL to deal with color conversion
 // as neither CLR or TinyCore understands any color space other than this default one.
 // For opacity, the valid value are from 0 (c_OpacityTransparent) to 256 (c_OpacityOpaque).
 
+
+
+//_____________________________________
+//	Gesture support
+//_____________________________________
+
+struct GestureDriver
+{
+	static const int c_IgnoreCount = 2;
+private:
+	static bool      s_initialized;
+
+
+	static PalEventListener m_gestureListener;
+	static HAL_COMPLETION   m_gestureCompletion;
+	static CLR_UINT32           m_index;
+	static CLR_UINT32           m_currentState;
+	static CLR_UINT16           m_lastx;
+	static CLR_UINT16           m_lasty;
+	static CLR_UINT16           m_startx;
+	static CLR_UINT16           m_starty;
+
+	static CLR_UINT32           m_stateIgnoreIndex;
+	static CLR_UINT32           m_stateIgnoreHead;
+	static CLR_UINT32           m_stateIgnoreTail;
+	static CLR_UINT32           m_stateIgnoreBuffer[c_IgnoreCount];
+
+
+public:
+	static HRESULT Initialize();
+	static HRESULT Uninitialize();
+	static bool ProcessPoint(CLR_UINT32 flags, CLR_UINT16 source, CLR_UINT16 x, CLR_UINT16 y, CLR_INT64 time);
+	static void ResetRecognition();
+	static void EventListener(unsigned int e, unsigned int param);
+	static void GestureContinuationRoutine(void* arg);
+
+};
+
+
+// Bitmap decoder
+
+typedef CLR_UINT32 COLORREF;
+
+enum BmpEncodingType
+{
+	BmpUnknown = 0,
+	Bmp16Bit_565 = 1,
+	Bmp24Bit_RGB = 2,
+	Bmp8Bit_Indexed = 3,
+	Bmp32Bit_ARGB = 4,
+};
+struct BmpDecoder
+{
+	int             width;
+	int             height;
+	BmpEncodingType encodingType;
+	HRESULT BmpInitOutput(const CLR_UINT8* src, CLR_UINT32 srcSize);
+	HRESULT BmpStartOutput(CLR_GFX_Bitmap* bitmap);
+	static CLR_UINT32 BmpOutputHelper(CLR_UINT32 flags, CLR_UINT16& opacity, void* param);
+
+private:
+	CLR_RT_ByteArrayReader source;
+	const CLR_UINT8* palette;
+	CLR_UINT8 paletteDepth;
+	bool isTopDown;
+};
+struct  BITMAPFILEHEADER {
+	CLR_UINT16 bfType;
+	CLR_UINT32 bfSize;
+	CLR_UINT16 bfReserved1;
+	CLR_UINT16 bfReserved2;
+	CLR_UINT32 bfOffBits;
+} __attribute__((packed));
+struct  BITMAPINFOHEADER {
+	CLR_UINT32 biSize;
+	CLR_INT32  biWidth;
+	CLR_INT32  biHeight;
+	CLR_UINT16 biPlanes;
+	CLR_UINT16 biBitCount;
+	CLR_UINT32 biCompression;
+	CLR_UINT32 biSizeImage;
+	CLR_INT32  biXPelsPerMeter;
+	CLR_INT32  biYPelsPerMeter;
+	CLR_UINT32 biClrUsed;
+	CLR_UINT32 biClrImportant;
+} __attribute__((packed));
+struct BmpOutputHelperParam
+{
+	CLR_RT_ByteArrayReader* source;
+	BmpEncodingType encodingType;
+	CLR_UINT32 srcWidthInBytes;
+	CLR_UINT8* srcRGB;
+	const CLR_UINT8* palette;
+	CLR_UINT8 paletteDepth;
+};
+
+
 #endif  // _GRAPHICS_H_
+

@@ -7,193 +7,8 @@
 //#include "string.h"
 #include "Graphics.h"
 #include "Display.h"
+#include "GraphicsMemoryHeap.h"
 
-struct Draw4PointsRoundedRectParams
-{
-	int x1;
-	int y1;
-	int x2;
-	int y2;
-	GFX_Pen* pen;
-	GFX_Brush* brush;
-	int lastFillOffsetY;
-};
-struct Draw4PointsEllipseParams
-{
-	int centerX;
-	int centerY;
-	GFX_Pen* pen;
-	GFX_Brush* brush;
-	int lastFillOffsetY;
-};
-struct RADIAN
-{
-	float cos;
-	float sin;
-};
-struct ConvertToNativeHelperParam
-{
-	CLR_UINT32* srcFirstWord;
-	CLR_UINT32  srcWidthInWords;
-	union
-	{
-		CLR_UINT32* srcCur1BppWord;
-		CLR_UINT16* srcCur16BppPixel;
-	};
-	CLR_UINT32  srcCur1BppPixelMask;
-};
-struct DivHelper
-{
-		// DivHelper is a support class used internally to assist calculating gradient fills
-		// DivHelper uses the midpoint technique to perform integer division using only addition and few multiplications.
-		// This is useful when we need to calculate y = a*x / b + c over a range of x values. All we need is a starting
-		// point where the value of y is known.
-		// Usage:
-		// For example, we have f(x) = d*x / e + f, where we know f(n) = m
-		// We construct the DivHelper struct by
-		//          DivHelper helper(d, e, m)
-		// By calling helper.Next(), we will get the result of f(n), f(n+1), f(n+2) ... etc.
-		// Note that if b is 0, Next() will always return initY
-	int a;
-	int b;
-	int D;
-	int y;
-	int stride;
-	int DIncStride;
-	int DIncStridePlus1;
-	bool first;
-
-	DivHelper(int _a, int _b, int initY)
-	{
-		// a and b are the constant in the formula y = a*x / b + c
-		//       initY is the initial value of Y
-		a = _a;
-		b = _b;
-		if (b != 0) stride = a / b;
-		DIncStride = 2 * (a - b * stride);
-		DIncStridePlus1 = 2 * (a - b * (stride + 1));
-		Reset(initY);
-	}
-	int Next()  // return the next y value.
-	{
-		if (first)
-		{
-			if (b == 0) return y; // if b == 0, first will always be true
-
-			first = false;
-			return y;
-		}
-		if (D > 0)
-		{
-			D += DIncStride;
-			y += stride;
-		}
-		else
-		{
-			D += DIncStridePlus1;
-			y += stride + 1;
-		}
-		return y;
-	}
-	void Reset(int initY)  // set a new initY value.
-	{
-		y = initY;
-		D = 2 * a - b * (2 * stride + 1);
-		first = true;
-	}
-};
-static const RADIAN radian[] = {
-	{ 1.0f, 0.0f },
-	{ 0.999847695156391f, 0.017452406437284f },
-	{ 0.999390827019096f, 0.034899496702501f },
-	{ 0.998629534754574f, 0.052335956242944f },
-	{ 0.997564050259824f, 0.069756473744125f },
-	{ 0.996194698091746f, 0.087155742747658f },
-	{ 0.994521895368273f, 0.104528463267653f },
-	{ 0.992546151641322f, 0.121869343405147f },
-	{ 0.990268068741570f, 0.139173100960065f },
-	{ 0.987688340595138f, 0.156434465040231f },
-	{ 0.984807753012208f, 0.173648177666930f },
-	{ 0.981627183447664f, 0.190808995376545f },
-	{ 0.978147600733806f, 0.207911690817759f },
-	{ 0.974370064785235f, 0.224951054343865f },
-	{ 0.970295726275996f, 0.241921895599668f },
-	{ 0.965925826289068f, 0.258819045102521f },
-	{ 0.961261695938319f, 0.275637355816999f },
-	{ 0.956304755963035f, 0.292371704722737f },
-	{ 0.951056516295154f, 0.309016994374947f },
-	{ 0.945518575599317f, 0.325568154457157f },
-	{ 0.939692620785908f, 0.342020143325669f },
-	{ 0.933580426497202f, 0.358367949545300f },
-	{ 0.927183854566787f, 0.374606593415912f },
-	{ 0.920504853452440f, 0.390731128489274f },
-	{ 0.913545457642601f, 0.406736643075800f },
-	{ 0.906307787036650f, 0.422618261740699f },
-	{ 0.898794046299167f, 0.438371146789077f },
-	{ 0.891006524188368f, 0.453990499739547f },
-	{ 0.882947592858927f, 0.469471562785891f },
-	{ 0.874619707139396f, 0.484809620246337f },
-	{ 0.866025403784439f, 0.500000000000000f },
-	{ 0.857167300702112f, 0.515038074910054f },
-	{ 0.848048096156426f, 0.529919264233205f },
-	{ 0.838670567945424f, 0.544639035015027f },
-	{ 0.829037572555042f, 0.559192903470747f },
-	{ 0.819152044288992f, 0.573576436351046f },
-	{ 0.809016994374947f, 0.587785252292473f },
-	{ 0.798635510047293f, 0.601815023152048f },
-	{ 0.788010753606722f, 0.615661475325658f },
-	{ 0.777145961456971f, 0.629320391049837f },
-	{ 0.766044443118978f, 0.642787609686539f },
-	{ 0.754709580222772f, 0.656059028990507f },
-	{ 0.743144825477394f, 0.669130606358858f },
-	{ 0.731353701619171f, 0.681998360062498f },
-	{ 0.719339800338651f, 0.694658370458997f },
-	{ 0.707106781186548f, 0.707106781186547f },
-	{ 0.694658370458997f, 0.719339800338651f },
-	{ 0.681998360062498f, 0.731353701619170f },
-	{ 0.669130606358858f, 0.743144825477394f },
-	{ 0.656059028990507f, 0.754709580222772f },
-	{ 0.642787609686539f, 0.766044443118978f },
-	{ 0.629320391049838f, 0.777145961456971f },
-	{ 0.615661475325658f, 0.788010753606722f },
-	{ 0.601815023152048f, 0.798635510047293f },
-	{ 0.587785252292473f, 0.809016994374947f },
-	{ 0.573576436351046f, 0.819152044288992f },
-	{ 0.559192903470747f, 0.829037572555042f },
-	{ 0.544639035015027f, 0.838670567945424f },
-	{ 0.529919264233205f, 0.848048096156426f },
-	{ 0.515038074910054f, 0.857167300702112f },
-	{ 0.500000000000000f, 0.866025403784439f },
-	{ 0.484809620246337f, 0.874619707139396f },
-	{ 0.469471562785891f, 0.882947592858927f },
-	{ 0.453990499739547f, 0.891006524188368f },
-	{ 0.438371146789077f, 0.898794046299167f },
-	{ 0.422618261740699f, 0.906307787036650f },
-	{ 0.406736643075800f, 0.913545457642601f },
-	{ 0.390731128489274f, 0.920504853452440f },
-	{ 0.374606593415912f, 0.927183854566787f },
-	{ 0.358367949545300f, 0.933580426497202f },
-	{ 0.342020143325669f, 0.939692620785908f },
-	{ 0.325568154457157f, 0.945518575599317f },
-	{ 0.309016994374947f, 0.951056516295154f },
-	{ 0.292371704722737f, 0.956304755963035f },
-	{ 0.275637355816999f, 0.961261695938319f },
-	{ 0.258819045102521f, 0.965925826289068f },
-	{ 0.241921895599668f, 0.970295726275996f },
-	{ 0.224951054343865f, 0.974370064785235f },
-	{ 0.207911690817759f, 0.978147600733806f },
-	{ 0.190808995376545f, 0.981627183447664f },
-	{ 0.173648177666930f, 0.984807753012208f },
-	{ 0.156434465040231f, 0.987688340595138f },
-	{ 0.139173100960066f, 0.990268068741570f },
-	{ 0.121869343405147f, 0.992546151641322f },
-	{ 0.104528463267653f, 0.994521895368273f },
-	{ 0.087155742747658f, 0.996194698091746f },
-	{ 0.069756473744125f, 0.997564050259824f },
-	{ 0.052335956242944f, 0.998629534754574f },
-	{ 0.034899496702501f, 0.999390827019096f },
-	{ 0.017452406437283f, 0.999847695156391f },
-};
 
 bool CLR_GFX_BitmapDescription::BitmapDescription_Initialize(int width, int height, int bitsPerPixel)
 {
@@ -214,6 +29,26 @@ bool CLR_GFX_BitmapDescription::BitmapDescription_Initialize(int width, int heig
 
 	return true;
 }
+int CLR_GFX_BitmapDescription::GetWidthInWords() const
+{
+	if (m_bitsPerPixel == CLR_GFX_BitmapDescription::c_NativeBpp)
+	{
+		return Graphics_Driver::GetWidthInWords(m_width);
+	}
+	return (m_width * m_bitsPerPixel + 31) / 32;
+}
+int CLR_GFX_BitmapDescription::GetTotalSize() const
+{
+	//compressed 1bpp bitmaps are not currently supported.
+	_ASSERTE((m_flags & CLR_GFX_BitmapDescription::c_Compressed) == 0);
+
+	if (m_bitsPerPixel == CLR_GFX_BitmapDescription::c_NativeBpp)
+	{
+		return Graphics_Driver::GetSize(m_width, m_height);
+	}
+	return GetWidthInWords() * m_height * sizeof(CLR_UINT32);
+}
+
 void CLR_GFX_Bitmap::Bitmap_Initialize()
 {
 	m_palBitmap.width = m_bm.m_width;
@@ -425,7 +260,6 @@ HRESULT CLR_GFX_Bitmap::CreateInstanceBmp(CLR_RT_HeapBlock& ref, const CLR_UINT8
 
 	NANOCLR_NOCLEANUP();
 }
-
 HRESULT CLR_GFX_Bitmap::DeleteInstance(CLR_RT_HeapBlock& ref)
 {
 	NANOCLR_HEADER();
@@ -449,7 +283,7 @@ HRESULT CLR_GFX_Bitmap::DeleteInstance(CLR_RT_HeapBlock& ref)
 		if (blob->IsBoxed() && blob[1].DataType() == DATATYPE_U4)
 		{
 			bitmap = (CLR_GFX_Bitmap*)(blob[1].NumericByRefConst().u4);
-			GraphicsMemory::Release(bitmap);
+			GraphicsMemoryHeap::Release(bitmap);
 		}
 		else
 		{
@@ -465,25 +299,6 @@ HRESULT CLR_GFX_Bitmap::DeleteInstance(CLR_RT_HeapBlock& ref)
 	ref.SetObjectReference(NULL);
 
 	NANOCLR_NOCLEANUP();
-}
-int CLR_GFX_BitmapDescription::GetWidthInWords() const
-{
-	if (m_bitsPerPixel == CLR_GFX_BitmapDescription::c_NativeBpp)
-	{
-		return Graphics_Driver::GetWidthInWords(m_width);
-	}
-	return (m_width * m_bitsPerPixel + 31) / 32;
-}
-int CLR_GFX_BitmapDescription::GetTotalSize() const
-{
-	//compressed 1bpp bitmaps are not currently supported.
-	_ASSERTE((m_flags & CLR_GFX_BitmapDescription::c_Compressed) == 0);
-
-	if (m_bitsPerPixel == CLR_GFX_BitmapDescription::c_NativeBpp)
-	{
-		return Graphics_Driver::GetSize(m_width, m_height);
-	}
-	return GetWidthInWords() * m_height * sizeof(CLR_UINT32);
 }
 void CLR_GFX_Bitmap::Decompress(const CLR_UINT8* data, CLR_UINT32 size)
 {
@@ -944,6 +759,7 @@ void CLR_GFX_Bitmap::DrawRectangle(const GFX_Pen& pen, const GFX_Brush& brush, c
 }
 void CLR_GFX_Bitmap::DrawRoundedRectangle(const GFX_Pen& pen, const GFX_Brush& brush, const GFX_Rect& rectangle, int radiusX, int radiusY)
 {
+	if (sizeof(brush) != sizeof(GFX_Brush)) {}; // Avoid unused parameter, maybe used in the future
 	GFX_Pen nativePen = Graphics_Driver::ConvertPenToNative(pen);
 	Graphics_Driver::DrawRoundedRectangleNative(m_palBitmap, nativePen, rectangle, radiusX, radiusY);
 }
@@ -1276,13 +1092,12 @@ void Graphics_Driver::DrawBresLineNative(const PAL_GFX_Bitmap& bitmap, int x0, i
 void Graphics_Driver::DrawLineRaw(const PAL_GFX_Bitmap& bitmap, const GFX_Pen& pen, int x0, int y0, int x1, int y1)
 {
 	GFX_Pen nativePen = ConvertPenToNative(pen);
-	nativePen.color = LCD_ConvertColor(nativePen.color);
+	nativePen.color = Display::ConvertColor(nativePen.color);
 
 	// TODO: thickness
 	// thickness value is ignore -- we always assume it's 1 pixel, for now
 	DrawBresLineNative(bitmap, x0, y0, x1, y1, nativePen);
 }
-
 CLR_UINT32 Graphics_Driver::GetPixelNative(const PAL_GFX_Bitmap& bitmap, int x, int y)
 {
 	if (IsPixelVisible(bitmap.clipping, x, y))
@@ -1352,7 +1167,6 @@ bool Graphics_Driver::IsPixelVisible(const GFX_Rect& clipping, int x, int y)
 	return (x >= clipping.left && x < clipping.right) &&
 		(y >= clipping.top && y < clipping.bottom);
 }
-
 void Graphics_Driver::EllipseAlgorithm(const PAL_GFX_Bitmap& bitmap, int radiusX, int radiusY, void* params, EllipseCallback ellipseCallback)
 {
 	// TODO: check for some upper bound of the radius so that the caclulation won't overflow the int.
@@ -1759,7 +1573,6 @@ void Graphics_Driver::Draw4PointsRoundedRect(const PAL_GFX_Bitmap& bitmap, int o
 		}
 	}
 }
-
 void Graphics_Driver::DrawEllipseNative(const PAL_GFX_Bitmap& bitmap, GFX_Pen& pen, GFX_Brush& brush, int x, int y, int radiusX, int radiusY)
 {
 	Draw4PointsEllipseParams params;

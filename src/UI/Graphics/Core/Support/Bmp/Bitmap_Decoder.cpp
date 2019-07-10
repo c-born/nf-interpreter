@@ -6,8 +6,14 @@
 
 #include <string.h>
 
-#include "Bmp.h"
+#include "Graphics.h"
 
+#define BI_RGB        0L
+#define BI_RLE8       1L
+#define BI_RLE4       2L
+#define BI_BITFIELDS  3L
+#define BI_JPEG       4L
+#define BI_PNG        5L
 
 // Initialization routine for BmpDecoder struct. When it's finished, 
 // the width / height / encodingType would be already loaded.

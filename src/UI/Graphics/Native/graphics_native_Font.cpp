@@ -5,7 +5,6 @@
 //
 
 #include "Graphics.h"
-#include "font.h"
 #include "graphics_native.h"
 
 HRESULT Library_graphics_native_Font::CharWidth___I4__CHAR( CLR_RT_StackFrame& stack )

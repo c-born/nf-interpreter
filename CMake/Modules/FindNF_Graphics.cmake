@@ -8,22 +8,20 @@
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Graphics.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/GraphicsMemoryHeap.cpp")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core")
-
-# UI/Graphics/Core/Support/Bmp
+#
+## UI/Graphics/Core/Support/Bmp
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Bmp/Bitmap_Decoder.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Bmp")
-
-# UI/Graphics/Core/Support/Fonts
+#
+## UI/Graphics/Core/Support/Fonts
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Fonts/Font.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Fonts")
-
-# UI/Graphics/Core/Support/Gif
+#
+## UI/Graphics/Core/Support/Gif
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif/Gif.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif/GifDecoder.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif/lzwread.cpp")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Gif")
-
-# UI/Graphics/Core/Support/Jpeg
+#
+## UI/Graphics/Core/Support/Jpeg
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jbytearraydatasrc.c")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcapimin.c")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/jcapistd.c")
@@ -77,49 +75,42 @@ list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/piint.c")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg/transupp.c")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Core/Support/Jpeg")
-
-# UI/Graphics/Core/Displays
+#
+## UI/Graphics/Core/Displays
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Displays/${Graphics_Display}")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Displays")
-
-# UI/Graphics/Native
+#
+## UI/Graphics/Native
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native/graphics_native.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native/graphics_native_Bitmap.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native/graphics_native_Font.cpp")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/Graphics/Native")
-
-# UI/TouchPanel/Core/Support
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Gesture/Gesture.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Gesture")
-
-# UI/TouchPanel/Core/Support
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Ink/Ink.cpp")
-list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/Support/Ink")
-
-# UI/TouchPanel/Core
+#
+## UI/TouchPanel/Core
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core/TouchPanel.cpp")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Core")
-
-# UI/TouchPanel/Devices
+#
+## UI/TouchPanel/Devices
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Devices/${Touch_Device}")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Devices")
-
-# UI/TouchPanel/Interfaces
+#
+## UI/TouchPanel/Interfaces
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Interfaces")
-
-# UI/TouchPanel/Native
+#
+## UI/TouchPanel/Native
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_Ink.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_TouchCollectorConfiguration.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_TouchEventProcessor.cpp")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native/TouchPanel_native_Touch_TouchPanel.cpp")
 list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}/src/UI/TouchPanel/Native")
-
-
-# Target Board Support
+#
+#
+## Target Board Support
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Graphics_Memory}")
 list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_Display_Interface}")
-list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_TouchPanel_Interface}")
+#list(APPEND Graphics_Sources "${PROJECT_SOURCE_DIR}/${Target_TouchPanel_Interface}")
+list(APPEND Graphics_Includes "${PROJECT_SOURCE_DIR}${Target_Graphics_Include}")
 
 # make var global
 #__________________

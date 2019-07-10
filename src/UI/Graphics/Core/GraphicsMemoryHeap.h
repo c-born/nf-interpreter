@@ -17,4 +17,12 @@ struct GraphicsMemoryHeap
 	static void* ReAllocate(void* pHeapBlock, CLR_UINT32 len);
 	static bool  IsAllocated(void* pHeapBlock);
 };
+
+struct GraphicsMemory
+{
+	static CLR_UINT64 StartingAddress;
+	static CLR_INT32 SizeInBytes;
+
+	static bool GraphicsMemorySetup()
+};
 #endif  // _GraphicsMemoryHeap_H

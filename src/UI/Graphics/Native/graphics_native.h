@@ -8,7 +8,6 @@
 #define _GRAPHICS_NATIVE_H__  
 
 #include "Graphics.h"
-#include "font.h"
 
 struct Library_graphics_native_Font
 {
