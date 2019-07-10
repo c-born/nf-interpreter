@@ -112,7 +112,17 @@
             "API_Windows.Storage" : "ON",
             "API_nanoFramework.Devices.Can" : "OFF",
             "API_nanoFramework.Devices.OneWire" : "ON",
-            "API_Hardware.Esp32" : "ON"
+            "API_Hardware.Esp32" : "ON",
+            "This_Is_A_Comment" : "===== Terry's GFX UI Additions below =====",
+            "NF_FEATURE_Graphics" : "ON",
+            "Graphics_Display" : "ILI9341_240x320_SPI.cpp", 
+            "Target_Graphics_Memory" : "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface/Graphics_Memory_Setup.cpp",
+            "Target_Graphics_Include" : "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface",
+            "Target_Display_Interface" : "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface/Spi_To_Display.cpp",
+            "NF_FEATURE_Touch" : "ON",
+            "TouchPanel_Device" : "XPT2046.cpp",
+            "Target_TouchPanel_Interface" : "targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/UI_Interface/Spi_To_TouchPanel.cpp"
+
         }
       }    
    ,
