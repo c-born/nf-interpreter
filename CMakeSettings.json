@@ -199,6 +199,11 @@
           "type": "BOOL"
         },
         {
+          "name": "API_Windows.Devices.Dac",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "API_Windows.Devices.Gpio",
           "value": "True",
           "type": "BOOL"
@@ -455,6 +460,10 @@
         },
         {
           "name": "API_Windows.Devices.Adc",
+          "value": "True",
+          "type": "BOOL"
+        },
+          "name": "API_Windows.Devices.Dac",
           "value": "True",
           "type": "BOOL"
         },
