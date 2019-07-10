@@ -23,6 +23,6 @@ struct GraphicsMemory
 	static CLR_UINT64 StartingAddress;
 	static CLR_INT32 SizeInBytes;
 
-	static bool GraphicsMemorySetup()
+	static bool GraphicsMemorySetup();
 };
 #endif  // _GraphicsMemoryHeap_H

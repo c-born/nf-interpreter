@@ -195,7 +195,7 @@ HRESULT TouchPanel_Driver::GetTouchPoint(CLR_UINT32* flags, TouchPoint** point)
 	CLR_UINT8 conditionalFlag = *flags & 0xF0;
 	CLR_INT32 index = 0;
 
-	GLOBAL_LOCK(irq);
+	GLOBAL_LOCK();
 
 	if ((m_head == m_tail) && g_PAL_TouchPointBufferSize > 1)
 		return CLR_E_FAIL;
@@ -366,7 +366,7 @@ HRESULT TouchPanel_Driver::GetTouchPoints(int* pointCount, CLR_INT16* sx, CLR_IN
 	if (pointCount == NULL) {}; // Avoid unused parameter, maybe used in the future?
 	if (sx == NULL) {}; // Avoid unused parameter, maybe used in the future?
 	if (sy == NULL) {}; // Avoid unused parameter, maybe used in the future?
-	GLOBAL_LOCK(irq);
+	GLOBAL_LOCK();
 	return S_OK;
 }
 
@@ -478,7 +478,7 @@ void TouchPanel_Driver::PollTouchPoint()
     CLR_INT64 time = ::Time_GetMachineTime();
 
 
-    GLOBAL_LOCK(irq);
+    GLOBAL_LOCK();
 
     /// Get the point information from driver.
     GetPoint(&flags, &source, &ux, &uy);
@@ -633,7 +633,7 @@ TouchPoint* TouchPanel_Driver::AddTouchPoint(CLR_UINT16 source, CLR_UINT16 x, CL
     static CLR_UINT16 lastAddedX = 0xFFFF;
     static CLR_UINT16 lastAddedY = 0xFFFF;
 
-    GLOBAL_LOCK(irq);
+    GLOBAL_LOCK();
 
     if ((x == TouchPointLocationFlags_ContactUp) || (x == TouchPointLocationFlags_ContactDown))
     {

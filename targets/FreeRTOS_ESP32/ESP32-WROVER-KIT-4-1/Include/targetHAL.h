@@ -10,8 +10,8 @@
 #include <esp32_os.h>
 
 extern portMUX_TYPE globalLockMutex;
-#define GLOBAL_LOCK(x)              portENTER_CRITICAL(&globalLockMutex);
-#define GLOBAL_UNLOCK(x)            portEXIT_CRITICAL(&globalLockMutex);
+#define GLOBAL_LOCK()              portENTER_CRITICAL(&globalLockMutex)
+#define GLOBAL_UNLOCK()            portEXIT_CRITICAL(&globalLockMutex)
 #define ASSERT_IRQ_MUST_BE_OFF()   // TODO need to determine if this needs implementation
 
 // platform dependent delay
