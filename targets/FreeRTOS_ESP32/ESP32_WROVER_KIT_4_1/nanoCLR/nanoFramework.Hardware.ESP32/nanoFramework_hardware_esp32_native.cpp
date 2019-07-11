@@ -8,7 +8,7 @@
 
 static const CLR_RT_MethodHandler method_lookup[] =
 {
-	NULL, 
+	NULL,
 	NULL,
 	NULL,
 	Library_nanoFramework_hardware_esp32_native_nanoFramework_Hardware_Esp32_Logging::NativeSetLogLevel___STATIC__VOID__STRING__I4,

@@ -6,41 +6,10 @@
 
 #include <string.h>
 #include <targetPAL.h>
-#include "win_dev_i2c_native.h"
+#include "win_dev_i2c_native_target.h"
 #include "Esp32_DeviceMapping.h"
 
- 
 static const char* TAG = "I2C";
-
-///////////////////////////////////////////////////////////////////////////////////////
-// !!! KEEP IN SYNC WITH Windows.Devices.I2c.I2cSharingMode (in managed code) !!!    //
-///////////////////////////////////////////////////////////////////////////////////////
-enum I2cSharingMode
-{
-    Exclusive = 0,
-    Shared
-};
-
-///////////////////////////////////////////////////////////////////////////////////////
-// !!! KEEP IN SYNC WITH Windows.Devices.I2c.I2cTransferStatus (in managed code) !!! //
-///////////////////////////////////////////////////////////////////////////////////////
- enum I2cTransferStatus
-{
-    I2cTransferStatus_FullTransfer = 0,
-    I2cTransferStatus_ClockStretchTimeout,
-    I2cTransferStatus_PartialTransfer,
-    I2cTransferStatus_SlaveAddressNotAcknowledged,
-    I2cTransferStatus_UnknownError
-};
-
-///////////////////////////////////////////////////////////////////////////////////////
-// !!! KEEP IN SYNC WITH Windows.Devices.I2c.I2cBusSpeed (in managed code) !!!       //
-///////////////////////////////////////////////////////////////////////////////////////
-enum I2cBusSpeed
-{
-    I2cBusSpeed_StandardMode = 0,
-    I2cBusSpeed_FastMode
-};
 
 typedef Library_win_dev_i2c_native_Windows_Devices_I2c_I2cConnectionSettings I2cConnectionSettings;
 
@@ -59,7 +28,7 @@ void Esp32_I2c_UnitializeAll()
     }
 }
 
-void Library_win_dev_i2c_native_Windows_Devices_I2c_I2cDevice::SetConfig(i2c_port_t bus, CLR_RT_HeapBlock* config)
+void SetConfig(i2c_port_t bus, CLR_RT_HeapBlock* config)
 {
     int busSpeed = config[ I2cConnectionSettings::FIELD___busSpeed ].NumericByRef().s4;
 
@@ -117,7 +86,7 @@ HRESULT Library_win_dev_i2c_native_Windows_Devices_I2c_I2cDevice::NativeInit___V
    NANOCLR_NOCLEANUP();
 }
 
-HRESULT Library_win_dev_i2c_native_Windows_Devices_I2c_I2cDevice::DisposeNative___VOID( CLR_RT_StackFrame& stack )
+HRESULT Library_win_dev_i2c_native_Windows_Devices_I2c_I2cDevice::NativeDispose___VOID__BOOLEAN( CLR_RT_StackFrame& stack )
 {
     NANOCLR_HEADER();
     {
@@ -196,12 +165,17 @@ HRESULT Library_win_dev_i2c_native_Windows_Devices_I2c_I2cDevice::NativeTransmit
             if (i2cStatus != ESP_OK) ESP_LOGE( TAG, "i2c_master_write error:%d", i2cStatus );
 
         }
-        if (readSize != 0 )  // Read
-        {
-            i2c_master_start(cmd);
-            i2c_master_write_byte( cmd, ( slaveAddress << 1 ) | I2C_MASTER_READ, 1);
-            i2cStatus = i2c_master_read(cmd, &readData[0], readSize, I2C_MASTER_ACK );
-            if (i2cStatus != ESP_OK) ESP_LOGE( TAG, "i2c_master_read error:%d", i2cStatus );
+		if (readSize != 0)  // Read
+		{
+			i2c_master_start(cmd);
+			i2c_master_write_byte(cmd, (slaveAddress << 1) | I2C_MASTER_READ, 1);
+			if (readSize > 1)
+			{
+				// Additional read bytes with ACK
+				i2c_master_read(cmd, &readData[0], readSize - 1, I2C_MASTER_ACK);
+			}
+			// Last read byte with NACK
+			i2c_master_read_byte(cmd, &readData[readSize - 1], I2C_MASTER_NACK);
         }
 
         i2c_master_stop(cmd);

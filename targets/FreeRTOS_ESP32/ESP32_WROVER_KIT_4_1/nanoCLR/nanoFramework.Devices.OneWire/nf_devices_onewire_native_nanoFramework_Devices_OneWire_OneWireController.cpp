@@ -3,8 +3,7 @@
 // See LICENSE file in the project root for full license information.
 //
 
-#include <nanoHAL.h>
-#include "nf_devices_onewire_native.h"
+#include "nf_devices_onewire_native_target.h"
 #include "target_nf_devices_onewire_config.h"
 
 // struct for working threads
@@ -441,7 +440,7 @@ HRESULT FindOneDevice(CLR_RT_StackFrame& stack, bool findFirst)
     if (DriverState != ONEWIRE_READY && !oneWireInit()) return CLR_E_INVALID_PARAMETER;
     
     // set an infinite timeout to wait forever for the operation to complete
-    // this value has to be in ticks to be properly loaded by SetupTimeoutFromTicks() bellow
+    // this value has to be in ticks to be properly loaded by SetupTimeoutFromTicks() below
     hbTimeout.SetInteger((CLR_INT64)-1);
     HRESULT result = stack.SetupTimeoutFromTicks(hbTimeout, timeout);
     if (result != S_OK) return result;

@@ -9,10 +9,10 @@
 #include <target_board.h>
 #include <esp32_os.h>
 
+// global mutex protecting the internal state of the interpreter, including event flags
 extern portMUX_TYPE globalLockMutex;
-#define GLOBAL_LOCK()              portENTER_CRITICAL(&globalLockMutex)
-#define GLOBAL_UNLOCK()            portEXIT_CRITICAL(&globalLockMutex)
-#define ASSERT_IRQ_MUST_BE_OFF()   // TODO need to determine if this needs implementation
+#define GLOBAL_LOCK()               portENTER_CRITICAL(&globalLockMutex);
+#define GLOBAL_UNLOCK()             portEXIT_CRITICAL(&globalLockMutex);
 
 // platform dependent delay
 #define PLATFORM_DELAY(milliSecs)   vTaskDelay(milliSecs);
@@ -59,7 +59,7 @@ extern portMUX_TYPE globalLockMutex;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 // DEBUGGER HELPER                                                                                 //
-// The line bellow is meant to be used as helper on checking that the execution engine is running. //
+// The line below is meant to be used as helper on checking that the execution engine is running. //
 // This can be inferred by checking if Events_WaitForEvents loop is running.                       //
 // The implementation should is to be provided by each target at target_common.h.in                //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
