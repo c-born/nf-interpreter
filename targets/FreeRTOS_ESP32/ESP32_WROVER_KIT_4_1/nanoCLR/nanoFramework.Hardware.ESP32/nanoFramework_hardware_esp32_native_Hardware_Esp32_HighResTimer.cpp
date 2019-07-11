@@ -3,7 +3,7 @@
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
-
+ 
 #include "nanoFramework_hardware_esp32_native.h"
 
 #define MAX_HRTIMERS 10

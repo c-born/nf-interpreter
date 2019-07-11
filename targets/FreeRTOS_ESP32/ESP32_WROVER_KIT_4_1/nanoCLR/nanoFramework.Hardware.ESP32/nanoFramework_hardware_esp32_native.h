@@ -3,7 +3,7 @@
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
-
+ 
 #ifndef _NANOFRAMEWORK_HARDWARE_ESP32_NATIVE_H_
 #define _NANOFRAMEWORK_HARDWARE_ESP32_NATIVE_H_
 
