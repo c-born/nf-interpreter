@@ -515,7 +515,7 @@
         },
         {
           "name": "Target_Display_Interface",
-          "value": "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface/Spi_To_Display.cpp",
+          "value": "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface",
           "type": "FILEPATH"
         },
         {

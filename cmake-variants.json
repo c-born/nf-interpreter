@@ -117,11 +117,11 @@
             "NF_FEATURE_Graphics" : "ON",
             "Graphics_Display" : "ILI9341_240x320_SPI.cpp", 
             "Target_Graphics_Memory" : "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface/Graphics_Memory_Setup.cpp",
-            "Target_Graphics_Include" : "targets/FreeRTOS_ESP32/ESP32_WROVER-KIT_4_1/UI_Interface",
-            "Target_Display_Interface" : "targets/FreeRTOS_ESP32/ESP32_WROVER-KIT_4_1/UI_Interface/Spi_To_Display.cpp",
+            "Target_Graphics_Include" : "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface",
+            "Target_Display_Interface" : "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface",
             "NF_FEATURE_Touch" : "ON",
             "TouchPanel_Device" : "XPT2046.cpp",
-            "Target_TouchPanel_Interface" : "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface/Spi_To_TouchPanel.cpp"
+            "Target_TouchPanel_Interface" : "targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/UI_Interface"
 
         }
       }    
