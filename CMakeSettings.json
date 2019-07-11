@@ -315,7 +315,7 @@
         },
         {
           "name": "ESP32_BOARD:STRING",
-          "value": "ESP32_WROVER_KIT_4_1",
+          "value": "ESP32_WROVER_KIT_4_1", 
           "type": "STRING"
         },
         {
