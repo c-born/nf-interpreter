@@ -12,7 +12,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/target_common.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/target_common.h" @ONLY)
 
 configure_file("${CMAKE_SOURCE_DIR}/CMake/ESP32_target_os.h.in"
-               "${CMAKE_BINARY_DIR}/targets/FreeRTOS/ESP32/ESP32-WROVER-KIT-4-1/target_os.h" @ONLY)
+               "${CMAKE_BINARY_DIR}/targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/target_os.h" @ONLY)
 
 
 set(NANOCLR_PROJECT_NAME "nanoCLR")
