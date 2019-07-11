@@ -12,7 +12,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/target_common.h.in"
                "${CMAKE_CURRENT_BINARY_DIR}/target_common.h" @ONLY)
 
 configure_file("${CMAKE_SOURCE_DIR}/CMake/ESP32_target_os.h.in"
-               "${CMAKE_BINARY_DIR}/targets/FreeRTOS_ESP32/ESP32-WROVER-KIT-4-1/target_os.h" @ONLY)
+               "${CMAKE_BINARY_DIR}/targets/FreeRTOS_ESP32/ESP32_WROVER_KIT_4_1/target_os.h" @ONLY)
 
 
 set(NANOCLR_PROJECT_NAME "nanoCLR")
@@ -271,8 +271,8 @@ add_custom_command( TARGET ${NANOCLR_PROJECT_NAME}.elf POST_BUILD
     
 # # Create partition table
 add_custom_command( TARGET ${NANOCLR_PROJECT_NAME}.elf POST_BUILD
-	COMMAND ${GEN_ESP32PART_PY_FILE}  --verify    ${PROJECT_SOURCE_DIR}/targets/FreeRTOS/ESP32/ESP32-WROVER-KIT-4-1/IDF/partitions_nanoclr_4mb.csv ${GEN_ESP32_BIN_PATH}/partitions_4mb.bin
-	COMMAND ${GEN_ESP32PART_PY_FILE}  --verify   ${PROJECT_SOURCE_DIR}/targets/FreeRTOS/ESP32/ESP32-WROVER-KIT-4-1/IDF/partitions_nanoclr_2mb.csv ${GEN_ESP32_BIN_PATH}/partitions_2mb.bin
+	COMMAND ${GEN_ESP32PART_PY_FILE}  --verify    ${PROJECT_SOURCE_DIR}/targets/FreeRTOS/ESP32/ESP32_WROVER_KIT_4_1/IDF/partitions_nanoclr_4mb.csv ${GEN_ESP32_BIN_PATH}/partitions_4mb.bin
+	COMMAND ${GEN_ESP32PART_PY_FILE}  --verify   ${PROJECT_SOURCE_DIR}/targets/FreeRTOS/ESP32/ESP32_WROVER_KIT_4_1/IDF/partitions_nanoclr_2mb.csv ${GEN_ESP32_BIN_PATH}/partitions_2mb.bin
 	COMMENT "Generate Esp32 Partition tables for 2MB and 4MB flash" )
 
 # list partition table
