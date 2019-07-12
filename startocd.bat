@@ -34,7 +34,7 @@ set iface=-f interface/ftdi/olimex-arm-usb-ocd-h.cfg -f target/esp32.cfg -c "ada
 goto start
 
 :ESP32_WROVER
-set iface=-f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp-wroom-32.cfg 
+set iface=-f interface/ftdi/esp32_devkitj_v1.cfg -f board/esp32-wrover.cfg 
 goto start
 
 :STM32_STLINK
