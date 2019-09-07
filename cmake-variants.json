@@ -56,7 +56,7 @@
             "NF_NETWORKING_SNTP" : "OFF",
             "NF_FEATURE_USE_APPDOMAINS" : "OFF",
             "NF_FEATURE_USE_FILESYSTEM" : "OFF",
-            "NF_SECURITY_OPENSSL" : "OFF",
+            "NF_SECURITY_OPENSSL" : "ON",
             "API_System.Net" : "ON",
             "API_Windows.Devices.Wifi": "ON",
             "API_Windows.Devices.Adc" : "ON",

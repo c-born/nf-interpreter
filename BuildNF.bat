@@ -206,6 +206,8 @@ cmake %esp_vars%%^
  -DAPI_Windows.Devices.Gpio=ON^
  -DNF_FEATURE_RTC=ON^
  -DNF_NETWORKING_SNTP=OFF^
+ -DNF_SECURITY_MBEDTLS:BOOL=ON^
+ -DMBEDTLS_SOURCE:PATH="C:\ESP32_TOOLS\esp-idf-v3.1\components\mbedtls\mbedtls"^
  -DAPI_Hardware.Esp32:BOOL=ON^
  -DAPI_Hardware.Stm32:BOOL=OFF^
  -DAPI_System.Net:BOOL=ON^
