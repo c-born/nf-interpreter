@@ -11,7 +11,8 @@
                 "EspTool" : "python ${env:ESP32_IDF_PATH}/components/esptool_py/esptool/esptool.py",
                 "EspEraseOpts" : "--chip esp32 --baud 115200 --before \"default_reset\" --after \"hard_reset\" erase_flash",
                 "EspFlashOpts" : "--chip esp32 --baud 921600 --before \"default_reset\" --after \"hard_reset\" write_flash -z --flash_mode \"dio\" --flash_freq \"40m\" --flash_size detect",
-                "EspBootLoader" : "0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin"
+                "EspBootLoader" : "0x1000 C:/ESP32_TOOLS/libs-v3.1/bootloader.bin",
+                "PreBuilt" : "B:/Build/PreBuilt"
             }
         }
     },
@@ -78,6 +79,16 @@
                 "panel": "shared"
             },
             "problemMatcher": []
-        }
+        },
+        {
+            "label": "Flash nanoCLR Prebuilt COM3",
+            "type": "shell",
+            "command": "%EspTool% --port %comPort% %EspFlashOpts% %EspBootLoader% 0x10000 %PreBuilt%/nanoCLR.bin 0x8000 %PreBuilt%/partitions_4mb.bin",
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
     ]
 }
