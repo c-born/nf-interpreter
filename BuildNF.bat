@@ -7,7 +7,7 @@ REM BEWARE of trailing whitespace after line continuation characer ^ - they will
 setlocal
 
 :: List of available targets - keep in sync with defined configurations below!
-set targets=STM32Disco STM32Nucleo ESP32_S ESP32 ESP32_L STM32Disco_yaml STM32Nucleo_yaml
+set targets=STM32Disco STM32Nucleo ESP32_S ESP32 ESP32_L ESP32_YAML STM32Disco_yaml STM32Nucleo_yaml
 
 :: default target
 set target=help
@@ -174,7 +174,7 @@ cmake %esp_vars%%^
  -DNF_FEATURE_RTC=ON^
  -DNF_NETWORKING_SNTP=ON^
  -DNF_FEATURE_WATCHDOG:BOOL=ON^
- -DNF_SECURITY_OPENSSL:BOOL=OFF^
+ -DNF_SECURITY_MBEDTLS:BOOL=ON^
  -DAPI_Hardware.Esp32:BOOL=ON^
  -DAPI_Hardware.Stm32:BOOL=OFF^
  -DAPI_System.Net:BOOL=ON^
@@ -208,6 +208,42 @@ cmake %esp_vars%%^
  -DNF_NETWORKING_SNTP=OFF^
  -DNF_SECURITY_MBEDTLS:BOOL=ON^
  -DMBEDTLS_SOURCE:PATH="C:\ESP32_TOOLS\esp-idf-v3.1\components\mbedtls\mbedtls"^
+ -DAPI_Hardware.Esp32:BOOL=ON^
+ -DAPI_Hardware.Stm32:BOOL=OFF^
+ -DAPI_System.Net:BOOL=ON^
+ -DAPI_Windows.Devices.Adc:BOOL=ON^
+ -DAPI_Windows.Devices.Gpio:BOOL=ON^
+ -DAPI_Windows.Devices.I2c:BOOL=ON^
+ -DAPI_Windows.Devices.Pwm:BOOL=ON^
+ -DAPI_Windows.Devices.SerialCommunication:BOOL=ON^
+ -DAPI_Windows.Devices.Spi:BOOL=ON^
+ -DAPI_Windows.Networking.Sockets:BOOL=OFF^
+ -DAPI_Windows.Storage:BOOL=OFF^
+ -DAPI_Windows.Devices.Wifi:BOOL=ON^
+ -DAPI_nanoFramework.Devices.Can:BOOL=OFF^
+ -DAPI_nanoFramework.Devices.OneWire:BOOL=ON^
+ -G Ninja %shortpath%
+ 
+goto :build
+
+:: === ESP32 WROOM32 - YAML settings
+:ESP32_YAML
+cmake %esp_vars%%^
+ -DESP32_BOARD:STRING=ESP32_WROOM_32^
+ -DBUILD_VERSION:STRING="0.9.99.999"^
+ -DUSE_NETWORKING_OPTION:BOOL=TRUE^
+ -DSUPPORT_ANY_BASE_CONVERSION=ON^
+ -DNF_FEATURE_HAS_CONFIG_BLOCK:BOOL=TRUE^
+ -DNF_FEATURE_DEBUGGER:BOOL=TRUE^
+ -DNF_WP_IMPLEMENTS_CRC32=OFF^
+ -DNF_FEATURE_HAS_SDCARD=ON^
+ -DNF_FEATURE_RTC=ON^
+ -DNF_NETWORKING_SNTP=OFF^
+ -DNF_SECURITY_MBEDTLS:BOOL=ON^
+ -DAPI_Windows.Devices.Gpio=ON^
+ -DAPI_System.Math=ON^
+ -DAPI_System.Net=ON^
+ -DAPI_Windows.Storage=ON^
  -DAPI_Hardware.Esp32:BOOL=ON^
  -DAPI_Hardware.Stm32:BOOL=OFF^
  -DAPI_System.Net:BOOL=ON^

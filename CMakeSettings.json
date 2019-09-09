@@ -175,7 +175,7 @@
         },
         {
           "name": "NF_SECURITY_MBEDTLS",
-          "value": "OFF",
+          "value": "True",
           "type": "BOOL"
         },
         {
@@ -463,6 +463,7 @@
           "value": "True",
           "type": "BOOL"
         },
+        {
           "name": "API_Windows.Devices.Dac",
           "value": "True",
           "type": "BOOL"
