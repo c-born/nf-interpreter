@@ -209,6 +209,7 @@ cmake %esp_vars%%^
  -DNF_NETWORKING_SNTP=OFF^
  -DNF_SECURITY_MBEDTLS:BOOL=ON^
  -DMBEDTLS_SOURCE:PATH="C:\ESP32_TOOLS\esp-idf-v3.1\components\mbedtls\mbedtls"^
+ -DAPI_System.Net:BOOL=ON^
  -DAPI_Hardware.Esp32:BOOL=ON^
  -DAPI_Hardware.Stm32:BOOL=OFF^
  -DAPI_System.Net:BOOL=ON^
