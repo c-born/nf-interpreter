@@ -44,6 +44,11 @@
           "type": "PATH"
         },
         {
+          "name": "MBEDTLS_SOURCE",
+          "value": "C:/ESP32_TOOLS/esp-idf-v3.1/components/mbedtls/mbedtls",
+          "type": "PATH"
+        },
+        {
           "name": "CMAKE_SYSTEM_NAME",
           "value": "Generic",
           "type": "STRING"
