@@ -3,7 +3,6 @@
 # See LICENSE file in the project root for full license information.
 #
 
-cmake_minimum_required(VERSION 3.0)
 ENABLE_LANGUAGE(ASM)
 
 # add header files with common OS definitions and board definitions specific for each image
@@ -124,13 +123,6 @@ add_executable(
 # add dependency from ChibiOS (this is required to make sure the ChibiOS repo is downloaded before the build starts)
 add_dependencies(${NANOBOOTER_PROJECT_NAME}.elf ChibiOS)
 add_dependencies(${NANOCLR_PROJECT_NAME}.elf ChibiOS)
-
-# add dependencies from CHIBIOS_FILESYSTEM_COMPONENTS (this is required to make sure that ChibiOS filesystem components are unzip at the proper locations before the build starts)
-# only required if filesystem is ON
-if(USE_FILESYSTEM_OPTION)
-    add_dependencies(${NANOBOOTER_PROJECT_NAME}.elf CHIBIOS_FILESYSTEM_COMPONENTS)
-    add_dependencies(${NANOCLR_PROJECT_NAME}.elf CHIBIOS_FILESYSTEM_COMPONENTS)
-endif()
 
 # include common directories
 include_directories(
