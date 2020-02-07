@@ -56,7 +56,7 @@ if /I NOT %bt%==STM goto :try_esp
 	:have_chibios
 	if %CHIBIOS_SOURCE%=="" echo Local Chibios source not set in environment or at %_mypath%..\ChibiOS
 	echo set up for ChibiOS
-	set stm_vars=-DTOOLCHAIN_PREFIX:PATH=%GNU_GCC_TOOLCHAIN_PATH% -DCHIBIOS_SOURCE:PATH=%CHIBIOS_SOURCE%
+	set stm_vars=-DCMAKE_TOOLCHAIN_FILE=CMake/toolchain.arm-none-eabi.cmake -DTOOLCHAIN_PREFIX:PATH=%GNU_GCC_TOOLCHAIN_PATH% -DCHIBIOS_SOURCE:PATH=%CHIBIOS_SOURCE%
 :try_esp
 
 if /I %bt%==ESP (
@@ -64,7 +64,7 @@ if /I %bt%==ESP (
 	echo set up for Espressif IDF
 	REM We are using environment variables here - we could use hardcoded "C:/ESP32_TOOLS" etc instead
 	REM Set common vars for ESP32 builds
-	set esp_vars=-DEXECUTABLE_OUTPUT_PATH:PATH=%shortpath%build\%target% -DTARGET_SERIES:STRING=ESP32 -DRTOS:STRING=FREERTOS_ESP32 -DESP32_IDF_PATH:PATH=%ESP32_IDF_PATH% -DESP32_LIBS_PATH:PATH=%ESP32_LIBS_PATH%
+	set esp_vars=-DCMAKE_TOOLCHAIN_FILE=CMake/toolchain.xtensa-esp32-elf.cmake -DTOOLCHAIN_PREFIX=%ESP32_TOOLCHAIN_PATH% -DESP32_IDF_PATH=%ESP32_IDF_PATH% -DESP32_LIBS_PATH=%ESP32_LIBS_PATH% -DEXECUTABLE_OUTPUT_PATH:PATH=%shortpath%build\%target% -DTARGET_SERIES:STRING=ESP32 -DRTOS:STRING=FREERTOS_ESP32 -DESP32_IDF_PATH:PATH=%ESP32_IDF_PATH% -DESP32_LIBS_PATH:PATH=%ESP32_LIBS_PATH%
 )
 ::goto :eof
 call :%target%
