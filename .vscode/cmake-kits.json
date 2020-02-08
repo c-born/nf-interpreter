@@ -5,6 +5,6 @@
   },
   {
     "name": "ChibiOS Tools",
-    "toolchainFile": "CMake/toolchain.ChibiOS.GCC.cmake"
+    "toolchainFile": "CMake/toolchain.arm-none-eabi.cmake"
   }
 ]
