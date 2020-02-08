@@ -5,7 +5,20 @@
       "generator": "Ninja",
       "configurationType": "Debug",
       "inheritEnvironments": [ "gcc-arm" ],
-      "environments": [ { "PATH": "C:\\Windows\\system32;${env.PATH}" } ],
+      "environments": [ 
+	  {
+          // Work around for Ninja not finding Cmd.exe with add_custom_command
+          "PATH": "C:\\Windows\\system32;C:\\Program Files\\Espressif\\ESP-IDF Tools\\mconf-idf;c:\\python27;${env.PATH}",
+	            // ESP32 paths set up in environment so we can use in variables
+          "ESP32_IDF_VERSION": "v3.3",
+          "ESP32_TOOLS": "C:\\ESP32_TOOLS",
+          "ESP32_IDF": "${env.ESP32_TOOLS}\\esp-idf-${env.ESP32_IDF_VERSION}",
+          "ESP32_LIB": "${env.ESP32_TOOLS}\\libs-${env.ESP32_IDF_VERSION}",
+          "ESP32_MBEDTLS_SOURCE": "${env.ESP32_IDF}/Components/mbedtls/mbedtls",
+
+          "IDF_PATH": "${env.ESP32_IDF}"
+	  }
+	  ],
       "buildRoot": "${workspaceRoot}/Build\\${name}",
       "installRoot": "${workspaceRoot}/Build/install/${name}",
       "cmakeCommandArgs": "",
@@ -17,6 +30,10 @@
           "name": "VISUAL_STUDIO",
           "value": "TRUE",
           "type": "STRING"
+        },
+		{
+          "name": "CMAKE_TOOLCHAIN_FILE",
+          "value": "CMake/toolchain.xtensa-esp32-elf.cmake"
         },
         {
           "name": "EXECUTABLE_OUTPUT_PATH",
