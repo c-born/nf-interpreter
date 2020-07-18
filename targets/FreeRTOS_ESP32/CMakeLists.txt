@@ -32,7 +32,7 @@ if(USE_SECURITY_MBEDTLS_OPTION)
         endif()
 
         # set tag for currently supported version
-        set(MBEDTLS_GIT_TAG "mbedtls-2.16.3")
+        set(MBEDTLS_GIT_TAG "mbedtls-2.23.0")
 
         # need to setup a separate CMake project to download the code from the GitHub repository
         # otherwise it won't be available before the actual build step
@@ -73,7 +73,7 @@ if(USE_SECURITY_MBEDTLS_OPTION)
         if(EXISTS "${MBEDTLS_SOURCE}/")
 
             # check if we already have the sources, no need to copy again
-            NF_DIRECTORY_EXISTS_NOT_EMPTY(${CMAKE_BINARY_DIR}/mbedTLS_Source SOURCE_EXISTS)
+            NF_DIRECTORY_EXISTS_NOT_EMPTY(${CMAKE_BINARY_DIR}/mbedTLS_Source/ SOURCE_EXISTS)
 
             if(NOT ${SOURCE_EXISTS})
                 message(STATUS "mbedTLS source from: ${MBEDTLS_SOURCE}")

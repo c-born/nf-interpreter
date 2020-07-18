@@ -7,6 +7,11 @@
 #ifndef _DRIVERS_GPIO_DECL_H_
 #define _DRIVERS_GPIO_DECL_H_ 1
 
+#if defined (__GNUC__)
+#define __int64 long long
+#endif
+typedef unsigned __int64 CLR_UINT64;
+
 #define GPIO_PIN_NONE               0xFFFFFFFF
 
 #define GPIO_ATTRIBUTE_NONE         0x00
@@ -16,31 +21,25 @@
 #define GPIO_ATTRIBUTE_ALTERNATE_B  0x08
 
 
-///////////////////////////////////////////////////////////////////////////////////////
-// !!! KEEP IN SYNC WITH Windows.Devices.Gpio.GpioPinDriveMode (in managed code) !!! //
-///////////////////////////////////////////////////////////////////////////////////////
-
-enum GpioPinDriveMode
+// from declaration at src\Windows.Devices.Gpio\win_dev_gpio_native.h
+typedef enum __nfpack GpioPinDriveMode
 {
     GpioPinDriveMode_Input = 0,
-    GpioPinDriveMode_InputPullDown,
-    GpioPinDriveMode_InputPullUp,
-    GpioPinDriveMode_Output,
-    GpioPinDriveMode_OutputOpenDrain,
-    GpioPinDriveMode_OutputOpenDrainPullUp,
-    GpioPinDriveMode_OutputOpenSource,
-    GpioPinDriveMode_OutputOpenSourcePullDown
-};
+    GpioPinDriveMode_InputPullDown = 1,
+    GpioPinDriveMode_InputPullUp = 2,
+    GpioPinDriveMode_Output = 3,
+    GpioPinDriveMode_OutputOpenDrain = 4,
+    GpioPinDriveMode_OutputOpenDrainPullUp = 5,
+    GpioPinDriveMode_OutputOpenSource = 6,
+    GpioPinDriveMode_OutputOpenSourcePullDown = 7,
+} GpioPinDriveMode;
 
-///////////////////////////////////////////////////////////////////////////////////
-// !!! KEEP IN SYNC WITH Windows.Devices.Gpio.GpioPinValue (in managed code) !!! //
-///////////////////////////////////////////////////////////////////////////////////
-
-enum GpioPinValue
+// from declaration at src\Windows.Devices.Gpio\win_dev_gpio_native.h
+typedef enum __nfpack GpioPinValue
 {
-	GpioPinValue_Low = 0,
-	GpioPinValue_High,
-};
+    GpioPinValue_Low = 0,
+    GpioPinValue_High = 1,
+} GpioPinValue;
 
 enum GPIO_INT_EDGE
 {
@@ -90,22 +89,22 @@ bool   CPU_GPIO_EnableOutputPin( GPIO_PIN Pin, GpioPinValue InitialState, GpioPi
 //
 // Parameters :-
 //
-// Pin               
+// pinNumber               
 //   The number of the input pin to be enabled.
 // Debounce milisecs
 //   A value you can set to greater than 0 to enable glitch filtering (debouncing) for the number of millissecs
-// PIN_ISR
+// pin_ISR
 //   A pointer to a function that is called when an interrupt is generated.
-// PIN_ISR_Param
+// PIN_isr_Param
 //   A programmer-defined parameter that is passed to the assigned interrupt service routine (ISR).
-// IntEdge
+// intEdge
 //   A value that indicates the transition edge or state on which the interrupt is called.
 // driveMode
 //   A value that specifies the resistor state to be used for the enabled pin, must be a valid input drive mode.
 // Return Value
 //   true if the specified pin was successfully enabled; otherwise, false.
 //
-bool   CPU_GPIO_EnableInputPin( GPIO_PIN Pin, int64_t debounceTimeMilliseconds, GPIO_INTERRUPT_SERVICE_ROUTINE PIN_ISR, void* ISR_Param, GPIO_INT_EDGE IntEdge, GpioPinDriveMode driveMode );
+bool CPU_GPIO_EnableInputPin( GPIO_PIN pinNumber, CLR_UINT64 debounceTimeMilliseconds, GPIO_INTERRUPT_SERVICE_ROUTINE pin_ISR, void* isr_Param, GPIO_INT_EDGE intEdge, GpioPinDriveMode driveMode );
 
 //  Return current gpio pin state
 GpioPinValue   CPU_GPIO_GetPinState    ( GPIO_PIN Pin );
@@ -129,7 +128,7 @@ int32_t  CPU_GPIO_GetPinCount    ();
 
 // Get / Set the pin debounce time in millisecs
 uint32_t CPU_GPIO_GetPinDebounce(GPIO_PIN Pin);
-bool   CPU_GPIO_SetPinDebounce(GPIO_PIN Pin, int64_t debounceTimeMilliseconds);
+bool     CPU_GPIO_SetPinDebounce(GPIO_PIN pinNumber, CLR_UINT64 debounceTimeMilliseconds);
 
 
 // Validate pin and set drive mode

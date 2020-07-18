@@ -87,10 +87,7 @@ static const CLR_RT_MethodHandler method_lookup[] =
 const CLR_RT_NativeAssemblyData g_CLR_AssemblyNative_nanoFramework_System_Text =
 {
     "nanoFramework.System.Text",
-    0x482137FC,
+    0x8E6EB73D,
     method_lookup,
-    ////////////////////////////////////////////////////////////////////////////////////
-    // check if the version bellow matches the one in AssemblyNativeVersion attribute //
-    ////////////////////////////////////////////////////////////////////////////////////
-    { 100, 0, 0, 0 }
+    { 100, 0, 0, 1 }
 };
