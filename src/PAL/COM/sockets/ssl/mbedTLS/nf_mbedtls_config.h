@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2018 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) 2006-2015, ARM Limited, All Rights Reserved
 // See LICENSE file in the project root for full license information.
 //
@@ -7,6 +7,7 @@
 #ifndef NF_MBEDTLS_CONFIG_H
 #define NF_MBEDTLS_CONFIG_H
 
+#include <nanoCLR_Headers.h>
 #include <target_common.h>
 #include <mbedtls_config.h>
 #include <time.h>
@@ -105,6 +106,7 @@ extern "C"
 #define MBEDTLS_AES_C
 #define MBEDTLS_ARC4_C
 #define MBEDTLS_ASN1_PARSE_C
+#define MBEDTLS_ASN1_WRITE_C
 
 #define MBEDTLS_BASE64_C
 
@@ -122,6 +124,7 @@ extern "C"
 #define MBEDTLS_DES_C
 #define MBEDTLS_DHM_C
 #define MBEDTLS_ECDH_C
+#define MBEDTLS_ECDSA_C
 
 #define MBEDTLS_ECP_C
 

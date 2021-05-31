@@ -59,7 +59,7 @@
           "type": "STRING"
         },
         {
-          "name": "ESP32_BOARD",
+          "name": "TARGET_BOARD",
           "value": "ESP32_WROOM_32",
           "type": "STRING"
         },
@@ -179,6 +179,11 @@
           "type": "BOOL"
         },
         {
+          "name": "API_System.IO.FileSystem",
+          "value": "ON",
+          "type": "BOOL"
+        },
+        {
           "name": "API_System.Math",
           "value": "True",
           "type": "BOOL"
@@ -199,7 +204,7 @@
           "type": "BOOL"
         },
         {
-          "name": "API_System.Devices.Dac",
+          "name": "API_System.Device.Dac",
           "value": "False",
           "type": "BOOL"
         },
@@ -209,7 +214,17 @@
           "type": "BOOL"
         },
         {
+          "name": "API_System.Device.Gpio",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "API_Windows.Devices.I2c",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "API_System.Device.I2c",
           "value": "True",
           "type": "BOOL"
         },
@@ -224,18 +239,23 @@
           "type": "BOOL"
         },
         {
+          "name": "API_System.IO.Ports",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "API_Windows.Devices.Spi",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "API_System.Device.Spi",
           "value": "True",
           "type": "BOOL"
         },
         {
           "name": "API_Windows.Devices.Wifi",
           "value": "True",
-          "type": "BOOL"
-        },
-        {
-          "name": "API_Windows.Networking.Sockets",
-          "value": "OFF",
           "type": "BOOL"
         },
         {
@@ -294,12 +314,12 @@
           "type": "STRING"
         },
         {
-          "name": "CHIBIOS_BOARD",
+          "name": "TARGET_BOARD",
           "value": "ST_STM32F769I_DISCOVERY",
           "type": "STRING"
         },
         {
-          "name": "CHIBIOS_SOURCE",
+          "name": "RTOS_SOURCE_FOLDER",
           "value": "C:/usr/src/NanoFramework/ChibiOS",
           "type": "PATH"
         },
@@ -444,6 +464,11 @@
           "type": "BOOL"
         },
         {
+          "name": "API_System.IO.FileSystem",
+          "value": "ON",
+          "type": "BOOL"
+        },
+        {
           "name": "API_System.Math",
           "value": "ON",
           "type": "BOOL"
@@ -459,7 +484,7 @@
           "type": "BOOL"
         },
         {
-          "name": "API_System.Devices.Dac",
+          "name": "API_System.Device.Dac",
           "value": "False",
           "type": "BOOL"
         },
@@ -469,7 +494,17 @@
           "type": "BOOL"
         },
         {
+          "name": "API_System.Device.Gpio",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
           "name": "API_Windows.Devices.I2c",
+          "value": "True",
+          "type": "BOOL"
+        },
+        {
+          "name": "API_System.Device.I2c",
           "value": "True",
           "type": "BOOL"
         },
@@ -484,13 +519,13 @@
           "type": "BOOL"
         },
         {
-          "name": "API_Windows.Devices.Spi",
+          "name": "API_System.IO.Ports",
           "value": "True",
           "type": "BOOL"
         },
         {
-          "name": "API_Windows.Networking.Sockets",
-          "value": "OFF",
+          "name": "API_Windows.Devices.Spi",
+          "value": "True",
           "type": "BOOL"
         },
         {

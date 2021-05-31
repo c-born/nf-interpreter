@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
 
@@ -10,7 +10,7 @@
 #include <nanoCLR_Interop.h>
 #include <nanoCLR_Runtime.h>
 #include <nanoCLR_Checks.h>
-#include <Esp32_os.h>
+#include <esp32_os.h>
 
 
 struct Library_win_dev_wifi_native_Windows_Devices_WiFi_WiFiAdapter

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2019 The nanoFramework project contributors
+# Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 #
 
@@ -14,4 +14,9 @@ macro(NF_DIRECTORY_EXISTS_NOT_EMPTY path pathExists)
         set(${pathExists} FALSE)
     endif()
 
+endmacro()
+
+# define the base path for the library modules
+macro(SET_BASE_PATH_FOR_LIBRARIES_MODULES path)
+    set(BASE_PATH_FOR_CLASS_LIBRARIES_MODULES ${path})
 endmacro()

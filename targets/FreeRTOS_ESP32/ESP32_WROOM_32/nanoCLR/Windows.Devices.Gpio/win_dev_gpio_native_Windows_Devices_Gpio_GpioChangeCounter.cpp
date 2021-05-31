@@ -1,11 +1,11 @@
 //
-// Copyright (c) 2019 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
 
 #include "win_dev_gpio_native.h"
-#include <core.h>
+#include <Core.h>
 
 typedef Library_win_dev_gpio_native_Windows_Devices_Gpio_GpioChangeCount GpioChangeCount;
 typedef Library_corlib_native_System_TimeSpan TimeSpan;

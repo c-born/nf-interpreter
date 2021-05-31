@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
 
@@ -16,6 +16,6 @@
 // set preference to enable (or not) the RTC subsystem
 #define NXP_USE_RTC @HAL_USE_RTC_OPTION@
 
-#define OEMSYSTEMINFOSTRING "nanoCLR running @ @FREERTOS_BOARD@"
+#define OEMSYSTEMINFOSTRING "nanoCLR running @ @TARGET_NAME@"
 
 #endif /* _TARGET_BOARD_NANOCLR_H_ */

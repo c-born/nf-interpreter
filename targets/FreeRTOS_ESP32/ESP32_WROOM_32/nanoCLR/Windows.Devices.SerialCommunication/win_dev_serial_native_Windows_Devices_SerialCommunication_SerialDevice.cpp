@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
 
@@ -337,7 +337,7 @@ HRESULT Library_win_dev_serial_native_Windows_Devices_SerialCommunication_Serial
     NANOCLR_CHECK_HRESULT(NativeConfig___VOID(stack));
 
     // Create a task to handle UART event from ISR
-    sprintf(task_name, "uart%d_events", uart_num);
+    snprintf(task_name, ARRAYSIZE(task_name), "uart%d_events", uart_num);
     if (xTaskCreatePinnedToCore(uart_event_task, task_name, 2048, palUart, 12, &(palUart->UartEventTask), 1) != pdPASS)
     {
         ESP_LOGE(TAG, "Failed to start UART events task");
@@ -459,6 +459,19 @@ HRESULT Library_win_dev_serial_native_Windows_Devices_SerialCommunication_Serial
                 break;
         }
 
+        bool rs485Mode = ((SerialMode)pThis[FIELD___mode].NumericByRef().s4 == SerialMode_RS485);
+        if (rs485Mode)
+        {
+            // Disable any flow control & Set RS485 half duplex mode
+            uart_config.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
+            uart_set_mode(uart_num, UART_MODE_RS485_HALF_DUPLEX);
+        }
+        else
+        {
+            // Reset to normal mode
+            uart_set_mode(uart_num, UART_MODE_UART);
+        }
+
         // Already Initialised ?
         if (GetPalUartFromUartNum(uart_num)->SerialDevice)
         {
@@ -503,11 +516,18 @@ HRESULT Library_win_dev_serial_native_Windows_Devices_SerialCommunication_Serial
             NANOCLR_SET_AND_LEAVE(CLR_E_PIN_UNAVAILABLE);
         }
 
-        // Don't use RTS/CTS if no hardware handshake enabled
-        if (uart_config.flow_ctrl == UART_HW_FLOWCTRL_DISABLE)
+        // Don't use RTS/CTS pins if no hardware handshake enabled unless in RS485 mode
+        if (rs485Mode)
         {
-            rtsPin = UART_PIN_NO_CHANGE;
-            ctsPin = UART_PIN_NO_CHANGE;
+            ctsPin = UART_PIN_NO_CHANGE; // no need for a CTS pin enabled, just RTS
+        }
+        else
+        {
+            if (uart_config.flow_ctrl == UART_HW_FLOWCTRL_DISABLE)
+            {
+                rtsPin = UART_PIN_NO_CHANGE;
+                ctsPin = UART_PIN_NO_CHANGE;
+            }
         }
 
         if (uart_set_pin(uart_num, txPin, rxPin, rtsPin, ctsPin) != ESP_OK)
@@ -681,7 +701,7 @@ HRESULT Library_win_dev_serial_native_Windows_Devices_SerialCommunication_Serial
 
                 // Create a task to handle UART event from ISR
                 char task_name[16];
-                sprintf(task_name, "uart%d_tx", uart_num);
+                snprintf(task_name, ARRAYSIZE(task_name), "uart%d_tx", uart_num);
 
                 if (xTaskCreate(UartTxWorkerTask, task_name, 2048, palUart, 12, NULL) != pdPASS)
                 {
@@ -717,11 +737,8 @@ HRESULT Library_win_dev_serial_native_Windows_Devices_SerialCommunication_Serial
         }
 
         // non-blocking wait allowing other threads to run while we wait for the Tx operation to complete
-        NANOCLR_CHECK_HRESULT(g_CLR_RT_ExecutionEngine.WaitEvents(
-            stack.m_owningThread,
-            *timeoutTicks,
-            CLR_RT_ExecutionEngine::c_Event_SerialPortOut,
-            eventResult));
+        NANOCLR_CHECK_HRESULT(
+            g_CLR_RT_ExecutionEngine.WaitEvents(stack.m_owningThread, *timeoutTicks, Event_SerialPortOut, eventResult));
 
         if (eventResult)
         {
@@ -880,11 +897,9 @@ HRESULT IRAM_ATTR
         else
         {
             // wait for event
-            NANOCLR_CHECK_HRESULT(g_CLR_RT_ExecutionEngine.WaitEvents(
-                stack.m_owningThread,
-                *timeoutTicks,
-                CLR_RT_ExecutionEngine::c_Event_SerialPortIn,
-                eventResult));
+            NANOCLR_CHECK_HRESULT(
+                g_CLR_RT_ExecutionEngine
+                    .WaitEvents(stack.m_owningThread, *timeoutTicks, Event_SerialPortIn, eventResult));
 
             if (!eventResult)
             {

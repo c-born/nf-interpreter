@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2017 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
@@ -7,11 +7,7 @@
 #ifndef _NANOHAL_H_
 #define _NANOHAL_H_ 1
 
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-#include <stdarg.h>
-#include <nanoWeak.h>
+#include <nanoCLR_Headers.h>
 #include <nanoHAL_v2.h>
 
 #if defined(PLATFORM_EMULATED_FLOATINGPOINT)
@@ -55,6 +51,9 @@
 #define NATIVE_PROFILE_CLR_HEAP_PERSISTENCE()
 #define NATIVE_PROFILE_CLR_IOPORT()
 #define NATIVE_PROFILE_CLR_IO()
+
+#define NATIVE_PROFILE_PAL_ASYNC_PROC_CALL()
+#define NATIVE_PROFILE_PAL_EVENTS()
 
 #if defined(_MSC_VER)
 
@@ -798,8 +797,6 @@ template <typename T> class HAL_RingBuffer
 
 void nanoHAL_Initialize();
 void nanoHAL_Uninitialize();
-
-void HAL_EnterBooterMode();
 
 typedef void (*ON_SOFT_REBOOT_HANDLER)(void);
 

@@ -1,19 +1,21 @@
 //
-// Copyright (c) 2019 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
 
 #include <targetPAL.h>
 #include <corlib_native.h>
-#include "win_dev_gpio_native_target.h"
-#include "nf_rt_events_native.h"
+#include "win_dev_gpio_native.h"
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
-void Gpio_Interupt_ISR(GPIO_PIN pinNumber, bool pinState)
+//  move this to sys_dev_gpio_native_System_Device_Gpio_GpioPin when Windows.Devices.Gpio is removed
+void Gpio_Interupt_ISR(GPIO_PIN pinNumber, bool pinState, void *pArg)
 {
+    (void)pArg;
+
     // if handle registered then post a managed event with the current pin reading
     PostManagedEvent(EVENT_GPIO, 0, (uint16_t)pinNumber, (uint32_t)pinState);
 }

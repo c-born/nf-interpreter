@@ -1,9 +1,8 @@
 //
-// Copyright (c) 2019 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
 
-#include <stdint.h>
 #include <nanoCLR_Application.h>
 #include <nanoHAL_v2.h>
 
@@ -12,9 +11,6 @@
 #include <xdc/runtime/Error.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
-
-// board Header files
-#include <ti_drivers_config.h>
 
 #include <ti/drivers/gpio/GPIOCC26XX.h>
 // clang-format off
@@ -61,6 +57,10 @@ int main(void)
     // Call board init functions
     Board_init();
 
+    GPIO_init();
+    ADC_init();
+    ConfigUART();
+
     // setup Task thread
     Task_Params_init(&taskParams);
     taskParams.stackSize = THREADSTACKSIZE;
@@ -91,10 +91,6 @@ int main(void)
         while (1)
             ;
     }
-
-    GPIO_init();
-    ADC_init();
-    ConfigUART();
 
     BIOS_start();
 

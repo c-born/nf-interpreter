@@ -1,17 +1,19 @@
 #
-# Copyright (c) 2019 The nanoFramework project contributors
+# Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 #
 
+include(FetchContent)
+FetchContent_GetProperties(lwip)
 
 # List of the required lwIp include files.
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/LWIP_Source/src/include/)
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/LWIP_Source/src/include/lwip)
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/LWIP_Source/src/include/netif)
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/LWIP_Source/src/include/compat)
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_BINARY_DIR}/LWIP_Source/src/include/compat/posix)
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/DeviceInterfaces/Networking.Sntp)
-list(APPEND LWIP_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/targets/FreeRTOS/NXP/LwIP)
+list(APPEND LWIP_INCLUDE_DIRS ${lwip_SOURCE_DIR}/src/include/)
+list(APPEND LWIP_INCLUDE_DIRS ${lwip_SOURCE_DIR}/src/include/lwip)
+list(APPEND LWIP_INCLUDE_DIRS ${lwip_SOURCE_DIR}/src/include/netif)
+list(APPEND LWIP_INCLUDE_DIRS ${lwip_SOURCE_DIR}/src/include/compat)
+list(APPEND LWIP_INCLUDE_DIRS ${lwip_SOURCE_DIR}/src/include/compat/posix)
+list(APPEND LWIP_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/DeviceInterfaces/Networking.Sntp)
+list(APPEND LWIP_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/targets/FreeRTOS/NXP/_LwIP)
 
 set(LWIP_SRCS
 
@@ -173,36 +175,43 @@ if(NF_NETWORKING_SNTP)
 endif()
 
 foreach(SRC_FILE ${LWIP_SRCS})
+
     set(LWIP_SRC_FILE SRC_FILE -NOTFOUND)
+
     find_file(LWIP_SRC_FILE ${SRC_FILE}
         PATHS 
-            # ${PROJECT_BINARY_DIR}/ChibiOS_Source/os/various
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/core
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/core/ipv4
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/core/ipv6
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/api
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/netif
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/netif/ppp
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/netif/ppp/polarssl
+            # ${chibios_SOURCE_DIR}/os/various
+            ${lwip_SOURCE_DIR}/src/core
+            ${lwip_SOURCE_DIR}/src/core/ipv4
+            ${lwip_SOURCE_DIR}/src/core/ipv6
+            ${lwip_SOURCE_DIR}/src/api
+            ${lwip_SOURCE_DIR}/src/netif
+            ${lwip_SOURCE_DIR}/src/netif/ppp
+            ${lwip_SOURCE_DIR}/src/netif/ppp/polarssl
 
-			# ${PROJECT_SOURCE_DIR}/targets/CMSIS-OS/ChibiOS/Lwip
+			# ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_Lwip
 			# TODO: this needs to be changed so it's not platform dependent
-			${PROJECT_SOURCE_DIR}/targets/FreeRTOS/NXP/LwIP
+			${CMAKE_SOURCE_DIR}/targets/FreeRTOS/NXP/_LwIP
 
             # APPS:
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/snmp
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/http
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/lwiperf
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/sntp
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/mdns
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/netbiosns
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/tftp
-            ${PROJECT_BINARY_DIR}/LWIP_Source/src/apps/mqtt
+            ${lwip_SOURCE_DIR}/src/apps/snmp
+            ${lwip_SOURCE_DIR}/src/apps/http
+            ${lwip_SOURCE_DIR}/src/apps/lwiperf
+            ${lwip_SOURCE_DIR}/src/apps/sntp
+            ${lwip_SOURCE_DIR}/src/apps/mdns
+            ${lwip_SOURCE_DIR}/src/apps/netbiosns
+            ${lwip_SOURCE_DIR}/src/apps/tftp
+            ${lwip_SOURCE_DIR}/src/apps/mqtt
 
         CMAKE_FIND_ROOT_PATH_BOTH
     )
-    # message("${SRC_FILE} >> ${LWIP_SRC_FILE}") # debug helper
+
+    if (BUILD_VERBOSE)
+		message("${SRC_FILE} >> ${LWIP_SRC_FILE}")
+    endif()
+
     list(APPEND LWIP_SOURCES ${LWIP_SRC_FILE})
+
 endforeach()
 
 include(FindPackageHandleStandardArgs)

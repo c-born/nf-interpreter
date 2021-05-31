@@ -1,13 +1,13 @@
 #
-# Copyright (c) 2017 The nanoFramework project contributors
+# Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 #
 
 # set include directories for nanoFramework Debugger
-list(APPEND NF_Debugger_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/CLR/Debugger)
-list(APPEND NF_Debugger_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/CLR/Messaging)
-list(APPEND NF_Debugger_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/CLR/WireProtocol)
-list(APPEND NF_Debugger_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/CLR/Include)
+list(APPEND NF_Debugger_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/CLR/Debugger)
+list(APPEND NF_Debugger_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/CLR/Messaging)
+list(APPEND NF_Debugger_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/CLR/WireProtocol)
+list(APPEND NF_Debugger_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/CLR/Include)
 
 # source files for nanoFramework Debugger
 set(NF_Debugger_SRCS
@@ -33,18 +33,25 @@ endif()
 
 
 foreach(SRC_FILE ${NF_Debugger_SRCS})
+
     set(NF_Debugger_SRC_FILE SRC_FILE-NOTFOUND)
+
     find_file(NF_Debugger_SRC_FILE ${SRC_FILE}
         PATHS 
-            ${PROJECT_SOURCE_DIR}/src/CLR/Debugger
-            ${PROJECT_SOURCE_DIR}/src/CLR/Messaging
-            ${PROJECT_SOURCE_DIR}/src/CLR/WireProtocol
-            ${PROJECT_SOURCE_DIR}/src/CLR/Core
+            ${CMAKE_SOURCE_DIR}/src/CLR/Debugger
+            ${CMAKE_SOURCE_DIR}/src/CLR/Messaging
+            ${CMAKE_SOURCE_DIR}/src/CLR/WireProtocol
+            ${CMAKE_SOURCE_DIR}/src/CLR/Core
 
         CMAKE_FIND_ROOT_PATH_BOTH
     )
-    # message("${SRC_FILE} >> ${NF_Debugger_SRC_FILE}") # debug helper
+
+    if (BUILD_VERBOSE)
+        message("${SRC_FILE} >> ${NF_Debugger_SRC_FILE}")
+    endif()
+
     list(APPEND NF_Debugger_SOURCES ${NF_Debugger_SRC_FILE})
+    
 endforeach()
 
 

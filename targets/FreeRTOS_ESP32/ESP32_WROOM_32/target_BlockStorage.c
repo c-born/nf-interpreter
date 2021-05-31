@@ -1,11 +1,11 @@
 //
-// Copyright (c) 2019 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // See LICENSE file in the project root for full license information.
 //
 
 #include <nanoPAL_BlockStorage.h>
 #include <targetHAL.h>
-#include <Target_BlockStorage_ESP32FlashDriver.h>
+#include <Target_BlockStorage_Esp32FlashDriver.h>
 
 extern struct BlockStorageDevice    Device_BlockStorage;
 extern struct MEMORY_MAPPED_NOR_BLOCK_CONFIG   Device_BlockStorageConfig;

@@ -1,5 +1,5 @@
 ﻿//
-// Copyright (c) 2018 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
@@ -72,5 +72,5 @@ const CLR_RT_NativeAssemblyData g_CLR_AssemblyNative_nanoFramework_Hardware_Esp3
     "nanoFramework.Hardware.Esp32",
     0x1B75B894,
     method_lookup,
-    { 100, 0, 7, 1 }
+    { 100, 0, 7, 2 }
 };

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 The nanoFramework project contributors
+# Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 #
 
@@ -48,16 +48,40 @@ function(NF_GENERATE_HEX_PACKAGE FILE1 FILE2 OUTPUTFILENAME)
 
 endfunction()
 
+# generates a binary file with nanoBooter + nanoCLR at the proper addresses
+# ready to be drag & drop on targets that feature DAPLink 
+function(NF_GENERATE_BIN_PACKAGE FILE1 FILE2 OFFSET OUTPUTFILENAME)
+
+    add_custom_command(
+            
+        TARGET ${NANOCLR_PROJECT_NAME}.elf POST_BUILD
+
+        COMMAND ${TOOL_SRECORD_PREFIX}/srec_cat
+
+        ${FILE1} -Binary
+        ${FILE2} -Binary -offset 0x${OFFSET}
+        -o ${OUTPUTFILENAME} -Binary
+
+        WORKING_DIRECTORY ${TOOL_SRECORD_PREFIX} 
+
+        COMMENT "exporting hex files to one binary file" 
+    )
+
+    # need to add a dependency of NANOCLR to NANOBOOTER because SRECORD util needs hex outputs of both targets
+    add_dependencies(${NANOCLR_PROJECT_NAME}.elf ${NANOBOOTER_PROJECT_NAME}.elf)
+
+endfunction()
+
 function(NF_GENERATE_BUILD_OUTPUT_FILES TARGET)
 
     # need to remove the .elf suffix from target name
     string(FIND ${TARGET} "." TARGET_EXTENSION_DOT_INDEX)
     string(SUBSTRING ${TARGET} 0 ${TARGET_EXTENSION_DOT_INDEX} TARGET_SHORT)
 
-    set(TARGET_HEX_FILE ${PROJECT_BINARY_DIR}/${TARGET_SHORT}.hex)
-    set(TARGET_S19_FILE ${PROJECT_BINARY_DIR}/${TARGET_SHORT}.s19)
-    set(TARGET_BIN_FILE ${PROJECT_BINARY_DIR}/${TARGET_SHORT}.bin)
-    set(TARGET_DUMP_FILE ${PROJECT_BINARY_DIR}/${TARGET_SHORT}.lst)
+    set(TARGET_HEX_FILE ${CMAKE_BINARY_DIR}/${TARGET_SHORT}.hex)
+    set(TARGET_S19_FILE ${CMAKE_BINARY_DIR}/${TARGET_SHORT}.s19)
+    set(TARGET_BIN_FILE ${CMAKE_BINARY_DIR}/${TARGET_SHORT}.bin)
+    set(TARGET_DUMP_FILE ${CMAKE_BINARY_DIR}/${TARGET_SHORT}.lst)
 
     if(CMAKE_BUILD_TYPE EQUAL "Release" OR CMAKE_BUILD_TYPE EQUAL "MinSizeRel")
 
@@ -68,7 +92,7 @@ function(NF_GENERATE_BUILD_OUTPUT_FILES TARGET)
                 COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${TARGET_SHORT}.elf> ${TARGET_BIN_FILE}
 
                 # copy target file to build folder (this is only usefull for debugging in VS Code because of path in launch.json)
-                COMMAND ${CMAKE_OBJCOPY} $<TARGET_FILE:${TARGET_SHORT}.elf> ${PROJECT_SOURCE_DIR}/build/${TARGET_SHORT}.elf
+                COMMAND ${CMAKE_OBJCOPY} $<TARGET_FILE:${TARGET_SHORT}.elf> ${CMAKE_SOURCE_DIR}/build/${TARGET_SHORT}.elf
 
                 COMMENT "Generate nanoBooter HEX and BIN files for deployment")
 
@@ -81,7 +105,7 @@ function(NF_GENERATE_BUILD_OUTPUT_FILES TARGET)
                 COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${TARGET_SHORT}.elf> ${TARGET_BIN_FILE}
 
                 # copy target file to build folder (this is only usefull for debugging in VS Code because of path in launch.json)
-                COMMAND ${CMAKE_OBJCOPY} $<TARGET_FILE:${TARGET_SHORT}.elf> ${PROJECT_SOURCE_DIR}/build/${TARGET_SHORT}.elf
+                COMMAND ${CMAKE_OBJCOPY} $<TARGET_FILE:${TARGET_SHORT}.elf> ${CMAKE_SOURCE_DIR}/build/${TARGET_SHORT}.elf
 
                 # dump target image as source code listing 
                 # ONLY when DEBUG info is available, this is on 'Debug' and 'RelWithDebInfo'

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2017 The nanoFramework project contributors
+# Copyright (c) .NET Foundation and Contributors
 # See LICENSE file in the project root for full license information.
 #
 
@@ -10,7 +10,7 @@ set(BASE_PATH_FOR_THIS_MODULE "${BASE_PATH_FOR_CLASS_LIBRARIES_MODULES}/Windows.
 # set include directories
 list(APPEND Windows.Devices.SerialCommunication_INCLUDE_DIRS ${BASE_PATH_FOR_THIS_MODULE})
 list(APPEND Windows.Devices.SerialCommunication_INCLUDE_DIRS ${TARGET_BASE_LOCATION})
-list(APPEND Windows.Devices.SerialCommunication_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/src/Windows.Devices.SerialCommunication)
+list(APPEND Windows.Devices.SerialCommunication_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/src/Windows.Devices.SerialCommunication)
 
 
 # source files
@@ -23,17 +23,24 @@ set(Windows.Devices.SerialCommunication_SRCS
 )
 
 foreach(SRC_FILE ${Windows.Devices.SerialCommunication_SRCS})
+
     set(Windows.Devices.SerialCommunication_SRC_FILE SRC_FILE-NOTFOUND)
+
     find_file(Windows.Devices.SerialCommunication_SRC_FILE ${SRC_FILE}
         PATHS 
             ${BASE_PATH_FOR_THIS_MODULE}
             ${TARGET_BASE_LOCATION}
-            ${PROJECT_SOURCE_DIR}/src/Windows.Devices.SerialCommunication
+            ${CMAKE_SOURCE_DIR}/src/Windows.Devices.SerialCommunication
 
         CMAKE_FIND_ROOT_PATH_BOTH
     )
-    # message("${SRC_FILE} >> ${Windows.Devices.SerialCommunication_SRC_FILE}") # debug helper
+
+    if (BUILD_VERBOSE)
+        message("${SRC_FILE} >> ${Windows.Devices.SerialCommunication_SRC_FILE}")
+    endif()
+
     list(APPEND Windows.Devices.SerialCommunication_SOURCES ${Windows.Devices.SerialCommunication_SRC_FILE})
+    
 endforeach()
 
 

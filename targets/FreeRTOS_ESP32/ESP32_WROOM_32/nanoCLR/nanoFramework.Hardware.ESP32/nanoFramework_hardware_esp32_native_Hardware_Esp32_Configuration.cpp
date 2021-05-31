@@ -1,12 +1,12 @@
 //
-// Copyright (c) 2019 The nanoFramework project contributors
+// Copyright (c) .NET Foundation and Contributors
 // Portions Copyright (c) Microsoft Corporation.  All rights reserved.
 // See LICENSE file in the project root for full license information.
 //
 
 #include "nanoFramework_hardware_esp32_native.h"
 
-#include <Esp32_os.h>
+#include <esp32_os.h>
 #include "Esp32_DeviceMapping.h"
 
 HRESULT Library_nanoFramework_hardware_esp32_native_nanoFramework_Hardware_Esp32_Configuration::NativeSetPinFunction___STATIC__VOID__I4__I4( CLR_RT_StackFrame& stack )
